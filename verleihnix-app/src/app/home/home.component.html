@@ -1,0 +1,23 @@
+<div>
+  <nav mat-tab-nav-bar mat-align-tabs="center">
+    <a mat-tab-link
+       [routerLink]="['./borrow']"
+       routerLinkActive #rlaborrow="routerLinkActive"
+       [active]="rlaborrow.isActive">
+        Ausleihen
+    </a>
+    <a mat-tab-link
+       [routerLink]="['./requests']"
+       routerLinkActive #rlarequests="routerLinkActive"
+       [active]="rlarequests.isActive">
+        Anfragen
+    </a>
+    <a mat-tab-link
+       [routerLink]="['./devices']"
+       routerLinkActive #rladevices="routerLinkActive"
+       [active]="rladevices.isActive">
+        Geräte
+    </a>
+  </nav>
+  <router-outlet></router-outlet>
+</div>
