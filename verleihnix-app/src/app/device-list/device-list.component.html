@@ -1,0 +1,43 @@
+<div>
+    <div>
+        <form (ngSubmit)="onSubmitLogin()" #searchForm="ngForm">
+          <mat-form-field>
+              <input name="search" matInput placeholder="" [(ngModel)]="searchValue">
+              <mat-icon matSuffix (click)="search()">{{'search'}}</mat-icon>
+            </mat-form-field>
+            <br>
+            <mat-form-field>
+                <input matInput [min]="minDateFrom" [formControl]="dateFrom" [matDatepicker]="pickerfrom" placeholder="von">
+                <mat-datepicker-toggle matSuffix [for]="pickerfrom"></mat-datepicker-toggle>
+                <mat-datepicker #pickerfrom></mat-datepicker>
+            </mat-form-field>
+            <mat-form-field>
+                <input matInput [min]="minDateTo" [formControl]="dateTo" [matDatepicker]="pickerto" placeholder="bis">
+                <mat-datepicker-toggle matSuffix [for]="pickerto"></mat-datepicker-toggle>
+                <mat-datepicker #pickerto></mat-datepicker>
+            </mat-form-field>
+        </form>
+    </div>
+    <div>
+      <mat-grid-list cols="3">
+          <mat-grid-tile *ngFor="let device of devices | filter: true:'title':searchValue">
+              <mat-card>
+                  <mat-card-header>
+                    <!-- <div mat-card-avatar class="example-header-image"></div> -->
+                    <mat-card-title>{{device.title}}</mat-card-title>
+                    <mat-card-subtitle>3 von 10 verfügbar</mat-card-subtitle>
+                  </mat-card-header>
+                  <img mat-card-image src="{{device.img}}" alt="Gerätefoto">
+                  <mat-card-content>
+                    <p>
+                      {{device.desc}}
+                    </p>
+                  </mat-card-content>
+                  <mat-card-actions align="end">
+                    <button (click)="goToDetail(device.id)" mat-button>Details</button>
+                  </mat-card-actions>
+                </mat-card>
+          </mat-grid-tile>
+        </mat-grid-list>
+    </div>
+  </div>

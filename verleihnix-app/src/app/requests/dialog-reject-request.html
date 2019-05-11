@@ -1,0 +1,11 @@
+<h1 mat-dialog-title>Anfrage ablehnen</h1>
+<div mat-dialog-content>
+  <p>Geben Sie einen Grund an, warum Sie die Anfrage ablehnen möchten.</p>
+  <mat-form-field>
+    <input matInput cdkFocusInitial [(ngModel)]="data.comment">
+  </mat-form-field>
+</div>
+<div mat-dialog-actions>
+  <button [disabled]="!data.comment" mat-button [mat-dialog-close]="data.comment">Ok</button>
+  <button mat-button [mat-dialog-close]="undefined">Abbrechen</button>
+</div>

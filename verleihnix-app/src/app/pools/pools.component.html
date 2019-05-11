@@ -1,0 +1,37 @@
+<h2>Geräteübersicht</h2>
+<div>
+  <mat-accordion>
+      <mat-expansion-panel *ngFor="let pool of devicePools">
+        <mat-expansion-panel-header>
+          <mat-panel-title>
+            {{pool.name}}
+          </mat-panel-title>
+          <mat-panel-description>
+            GerätePool1
+          </mat-panel-description>
+        </mat-expansion-panel-header>
+
+        <mat-list-item *ngFor="let de of pool.devices">
+            <h4 mat-line>{{de.title}}</h4>
+            <p mat-line> {{de.id}}</p>
+            <div mat-line align="right" >
+              <button mat-stroked-button (click)="goToEdit(pool.id, de.id)"><mat-icon>edit</mat-icon></button>
+            </div>
+            <br>
+            <mat-divider></mat-divider>
+          </mat-list-item>
+          <div mat-line align="right">
+            <br>
+              <button (click)="goToEdit(pool.id, -1)" mat-stroked-button color="primary">
+                  <mat-icon>add</mat-icon>
+              </button>
+          </div>
+      </mat-expansion-panel>
+    </mat-accordion>
+</div>
+<br>
+<div>
+    <button (click)="addPool()" mat-mini-fab color="primary">
+        <mat-icon>add</mat-icon>
+    </button>
+</div>

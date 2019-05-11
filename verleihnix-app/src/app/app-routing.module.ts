@@ -7,6 +7,10 @@ import { LoginComponent } from 'src/app/login/login.component';
 import { BorrowComponent } from 'src/app/borrow/borrow.component';
 import { RequestsComponent } from 'src/app/requests/requests.component';
 import { DevicesComponent } from 'src/app/devices/devices.component';
+import { DeviceDetailComponent } from './device-detail/device-detail.component';
+import { DeviceListComponent } from './device-list/device-list.component';
+import { DeviceEditComponent } from './device-edit/device-edit.component';
+import { PoolsComponent } from './pools/pools.component';
 
 const routes: Routes = [
   {
@@ -14,9 +18,21 @@ const routes: Routes = [
     component: HomeComponent,
     children: [
       {path: '', redirectTo: 'borrow', pathMatch: 'full'}, 
-      {path: 'borrow', component: BorrowComponent},
+      {
+        path: 'borrow',
+        component: BorrowComponent,
+        children:[
+          {path: '', redirectTo: 'list', pathMatch: 'full'},
+          {path: 'list', component: DeviceListComponent},
+          {path: 'device/:id', component: DeviceDetailComponent},
+        ]
+      },
       {path: 'requests', component: RequestsComponent},
-      {path: 'devices', component: DevicesComponent},
+      {path: 'mydevices', component: DevicesComponent, children:[
+        {path: '', redirectTo: 'pools', pathMatch: 'full'},
+        {path: 'pools', component: PoolsComponent},
+        {path: 'device-edit/:pid/:id', component: DeviceEditComponent},
+      ]},
     ]
   },
   {

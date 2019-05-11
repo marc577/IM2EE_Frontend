@@ -1,3 +1,46 @@
-<p>
-  requests works!
-</p>
+<div>
+  <div>
+      <mat-button-toggle-group
+        [(ngModel)]="requestType"
+        name="requestFilter"
+        (change)="requestFilterChanged($event)"
+        aria-label="Filter">
+          <mat-button-toggle value="0">Alle</mat-button-toggle>
+          <mat-button-toggle value="1">Eingang</mat-button-toggle>
+          <mat-button-toggle value="2">Ausgang</mat-button-toggle>
+        </mat-button-toggle-group>
+
+      <!-- <mat-radio-group
+      [(ngModel)]="requestType"
+      (change)="requestFilterChanged($event)">
+          <mat-radio-button value="0">Alle</mat-radio-button>
+          <mat-radio-button value="1">Eingang</mat-radio-button>
+          <mat-radio-button value="2">Ausgang</mat-radio-button>
+        </mat-radio-group> -->
+  </div>
+  <div>
+  <mat-list>
+      <h3 *ngIf="requestType == 0" mat-subheader>Alle</h3>
+      <h3 *ngIf="requestType == 1" mat-subheader>Eingang</h3>
+      <h3 *ngIf="requestType == 2" mat-subheader>Ausgang</h3>
+      <mat-list-item *ngFor="let re of requests | filter: filterActive:'type':requestType">
+        <mat-icon *ngIf="re.type == 1" mat-list-icon>assignment_returned</mat-icon>
+        <mat-icon *ngIf="re.type == 2" mat-list-icon>assignment_return</mat-icon>
+        <h4 mat-line>{{re.title}}</h4>
+        <p mat-line> {{re.from | date}} bis {{re.to | date}}</p>
+        <div mat-line>
+          <mat-chip-list *ngIf="re.type == 2">
+              <mat-chip selected color="primary">Offen</mat-chip>
+              <mat-chip>Aktzeptiert</mat-chip>
+              <mat-chip>Abgelehnt</mat-chip>
+            </mat-chip-list>
+            <div *ngIf="re.type == 1">
+              <button mat-raised-button color="primary">Aktzeptieren</button>
+              <button (click)="rejectRequest(re.id)" mat-raised-button>Ablehnen</button>
+            </div>
+        </div>
+        <mat-divider></mat-divider>
+      </mat-list-item>
+    </mat-list>
+  </div>
+</div>

@@ -17,7 +17,7 @@
                 <mat-error *ngIf="password.invalid">{{getErrorMessage(password, "Geben Sie ein Passwort an!", ['required'])}}</mat-error>
               </mat-form-field>
               <br>
-              <input value="Anmelden" type="submit" [disabled]="email.invalid || password.invalid" >
+              <button type="submit" mat-raised-button [disabled]="email.invalid || password.invalid">Anmelden</button>
             </form>
           </ng-template>
       </mat-tab>
@@ -42,7 +42,8 @@
                     <mat-icon matSuffix (click)="hide = !hide">{{hide ? 'visibility_off' : 'visibility'}}</mat-icon>
                     <mat-error *ngIf="password.invalid">{{getErrorMessage(password, "Geben Sie ein Passwort an!", ['required'])}}</mat-error>
                 </mat-form-field>
-                <input value="Anmelden" type="submit" [disabled]="email.invalid || password.invalid || name.invalid" >
+                <br>
+                <button type="submit" mat-raised-button [disabled]="email.invalid || password.invalid || name.invalid">Anmelden</button>
               </form>
           </ng-template>
       </mat-tab>

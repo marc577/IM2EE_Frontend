@@ -13,6 +13,6 @@ export class AuthService {
     return this.http.post('/api/login', {email, password});
   }
   isLogedIn(){
-    return false;
+    return true;
   }
 }

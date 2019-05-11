@@ -1,0 +1,14 @@
+<h1 mat-dialog-title>Gerätepool hinzufügen</h1>
+<div mat-dialog-content>
+  <p></p>
+  <mat-form-field>
+    <input matInput cdkFocusInitial [(ngModel)]="data.name" placeholder="Name">
+  </mat-form-field>
+  <mat-form-field>
+      <textarea matInput cdkFocusInitial [(ngModel)]="data.desc" placeholder="Beschreibung"></textarea>
+    </mat-form-field>
+</div>
+<div mat-dialog-actions>
+  <button [disabled]="!data.name || !data.desc" mat-button [mat-dialog-close]="data">Ok</button>
+  <button mat-button [mat-dialog-close]="undefined">Abbrechen</button>
+</div>
