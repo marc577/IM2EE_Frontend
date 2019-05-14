@@ -7,10 +7,19 @@ import { BehaviorSubject, Observable, Subject } from 'rxjs';
 })
 export class AuthService {
 
-  constructor(private http: HttpClient) { }
 
-  login(email:string, password:string ) {
-    return this.http.post('/api/login', {email, password});
+  private logedIn:boolean;
+
+  constructor(private http: HttpClient) {
+    this.logedIn = false;
+  }
+
+  logIn(email:string, password:string ) {
+    this.logedIn = true;
+    //return this.http.post('/api/login', {email, password});
+  }
+  logOut(){
+    this.logedIn = false;
   }
   isLogedIn(){
     return true;

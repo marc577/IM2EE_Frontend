@@ -1,3 +1,31 @@
-<p>
-  device-detail works!
-</p>
+<div>
+    <mat-grid-list cols="2" rowHeight="100px">
+      <mat-grid-tile colspan="2">
+          <h2>{{device.title}}</h2>
+      </mat-grid-tile>
+      <mat-grid-tile colspan="1">
+        <img [src]="device.img" alt="Bild Hier">
+      </mat-grid-tile>
+      <mat-grid-tile colspan="1">
+          <p>Beschreibung</p>
+      </mat-grid-tile>
+      <mat-grid-tile colspan="2">
+          <mat-form-field>
+              <input matInput [min]="minDateFrom" [matDatepickerFilter]="dateFilter" [formControl]="dateFrom" [matDatepicker]="pickerfrom" placeholder="von">
+              <mat-datepicker-toggle matSuffix [for]="pickerfrom"></mat-datepicker-toggle>
+              <mat-datepicker #pickerfrom></mat-datepicker>
+          </mat-form-field>
+          <mat-form-field>
+              <input matInput [min]="minDateTo" [matDatepickerFilter]="dateFilter" [formControl]="dateTo" [matDatepicker]="pickerto" placeholder="bis">
+              <mat-datepicker-toggle matSuffix [for]="pickerto"></mat-datepicker-toggle>
+              <mat-datepicker #pickerto></mat-datepicker>
+          </mat-form-field>
+          <mat-form-field>
+              <input matInput #countInput [min]="1" [max]="10" [formControl]="countFormControl" type="number" placeholder="Anzahl">
+              <mat-hint align="end">{{countInput.value || 1}}/10</mat-hint>
+              <mat-error *ngIf="countFormControl.invalid">Nicht verfügbar</mat-error>
+            </mat-form-field>
+          <button (click)="requestDevice()" mat-raised-button color="primary">Anfragen</button>
+      </mat-grid-tile>
+      </mat-grid-list>
+</div>

@@ -1,13 +1,13 @@
 import { Component, OnInit, OnDestroy, Inject } from '@angular/core';
 import { Router, ActivatedRoute } from '@angular/router';
 import { FormControl, Validators } from '@angular/forms';
-import { DataService, DevicePool } from 'src/app/services/data.service';
+import { DataService, DevicePool, Device } from 'src/app/services/data.service';
 import { Subscription } from 'rxjs';
 import {MatDialog, MatDialogRef, MAT_DIALOG_DATA} from '@angular/material';
 
 
 interface DialogData {
-  name: string;
+  title: string;
   desc: string;
 }
 
@@ -20,6 +20,7 @@ export class PoolsComponent implements OnInit, OnDestroy {
 
   subPoolData:Subscription;
   devicePools:[DevicePool];
+  expandedPool:number;
 
   constructor(
     private router: Router,
@@ -27,14 +28,14 @@ export class PoolsComponent implements OnInit, OnDestroy {
     private service:DataService,
     private dialog: MatDialog
     ) {
+      this.subPoolData = this.service.devicesData.subscribe((data) => {
+        this.devicePools = data;
+      });
+      
+    }
     
-    this.subPoolData = this.service.devicesData.subscribe((data) => {
-      this.devicePools = data;
-    });
-
-  }
-
   ngOnInit() {
+      this.expandedPool = this.service.expandedPool;
   }
   ngOnDestroy(){
     this.subPoolData.unsubscribe();
@@ -43,17 +44,46 @@ export class PoolsComponent implements OnInit, OnDestroy {
   goToEdit(poolId:number, deviceId:number){
     this.router.navigate(["../device-edit", poolId, deviceId], {relativeTo:this.aRoute});
   }
+  deleteDevice(p:Device){
+    if(confirm("Gerät "+p.title+" wirklich löschen?")){
+      this.service.deleteDevice(p);
+    }
+  }
 
 
   addPool(){
     const dialogRef = this.dialog.open(AddPoolDialog, {
       width: '300px',
-      data: {name: "", desc:""}
+      data: {id:-1, name: "", desc:""}
     });
 
-    dialogRef.afterClosed().subscribe(comment => {
-      console.log('The dialog was closed', comment);
+    dialogRef.afterClosed().subscribe( pool=> {
+      this.service.addPool(pool);
     });
+  }
+  editPool(p:DevicePool){
+    const dialogRef = this.dialog.open(AddPoolDialog, {
+      width: '300px',
+      data: p
+    });
+
+    dialogRef.afterClosed().subscribe( pool => {
+      this.service.editPool(pool);
+    });
+  }
+  deletePool(p:DevicePool){
+    if(confirm("Gerätepool "+p.name+" wirklich löschen?")){
+      this.service.deletePool(p);
+    }
+  }
+
+  setExpanded(i:number){
+    this.service.expandedPool = i;
+  }
+  setClosed(i:number){
+    if(this.service.expandedPool == i){
+      this.service.expandedPool = -1;
+    }
   }
 }
 

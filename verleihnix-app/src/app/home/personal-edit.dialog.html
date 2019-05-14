@@ -1,0 +1,37 @@
+<h1 mat-dialog-title>Benutzerdaten</h1>
+<div mat-dialog-content>
+    <mat-tab-group mat-align-tabs="center">
+      <mat-tab label="Name & E-Mail">
+        <br>
+        <mat-form-field>
+          <input matInput cdkFocusInitial [(ngModel)]="data.name" placeholder="Name">
+        </mat-form-field>
+        <br>
+        <mat-form-field>
+          <input matInput [(ngModel)]="data.email" placeholder="E-Mail">
+        </mat-form-field>
+        <br>
+        <button (click)="updateUserData()" mat-stroked-button color="primary">Speichern</button>
+        </mat-tab>
+        <mat-tab label="Passwort">
+            <br>
+            <mat-form-field>
+                <input matInput [(ngModel)]="data.password" placeholder="Aktuelles Passwort eingeben" [type]="hideOld ? 'password' : 'text'" required>
+                <mat-icon matSuffix (click)="hideOld = !hideOld">{{hideOld ? 'visibility_off' : 'visibility'}}</mat-icon>
+                <!-- <mat-error *ngIf="password.invalid"></mat-error> -->
+            </mat-form-field>
+            <br>
+            <mat-form-field>
+                <input [(ngModel)]="data.newPw" matInput placeholder="Neues Passwort eingeben" [type]="hide ? 'password' : 'text'" required>
+                <mat-icon matSuffix (click)="hide = !hide">{{hide ? 'visibility_off' : 'visibility'}}</mat-icon>
+                <!-- <mat-error *ngIf="password.invalid"></mat-error> -->
+            </mat-form-field>
+            <br>
+            <button (click)="updatePw()" mat-stroked-button color="primary">Passwort aktualisieren</button>
+        </mat-tab>
+    </mat-tab-group>
+   
+</div>
+<div mat-dialog-actions align="end">
+  <button mat-button [mat-dialog-close]="undefined">Schließen</button>
+</div>

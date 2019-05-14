@@ -1,7 +1,7 @@
 <h2>Geräteübersicht</h2>
 <div>
   <mat-accordion>
-      <mat-expansion-panel *ngFor="let pool of devicePools">
+      <mat-expansion-panel *ngFor="let pool of devicePools; let i = index" [expanded]="i == expandedPool" (opened)="setExpanded(i)" (closed)="setClosed(i)">
         <mat-expansion-panel-header>
           <mat-panel-title>
             {{pool.name}}
@@ -15,15 +15,22 @@
             <h4 mat-line>{{de.title}}</h4>
             <p mat-line> {{de.id}}</p>
             <div mat-line align="right" >
-              <button mat-stroked-button (click)="goToEdit(pool.id, de.id)"><mat-icon>edit</mat-icon></button>
+              <button matTooltip="Gerät bearbeiten" mat-stroked-button (click)="goToEdit(pool.id, de.id)"><mat-icon>edit</mat-icon></button>
+              <button matTooltip="Gerät löschen" color="warn" mat-stroked-button (click)="deleteDevice(de)"><mat-icon>delete</mat-icon></button>
             </div>
             <br>
             <mat-divider></mat-divider>
           </mat-list-item>
           <div mat-line align="right">
             <br>
-              <button (click)="goToEdit(pool.id, -1)" mat-stroked-button color="primary">
+              <button (click)="goToEdit(pool.id, -1)" mat-stroked-button color="primary" matTooltip="Gerät hinzufügen">
                   <mat-icon>add</mat-icon>
+              </button>
+              <button (click)="editPool(pool)" mat-stroked-button color="basic" matTooltip="Gerätepool bearbeiten">
+                  <mat-icon>edit</mat-icon>
+              </button>
+              <button (click)="deletePool(pool)" mat-stroked-button color="warn" matTooltip="Gerätepool löschen">
+                  <mat-icon>delete</mat-icon>
               </button>
           </div>
       </mat-expansion-panel>
@@ -31,7 +38,7 @@
 </div>
 <br>
 <div>
-    <button (click)="addPool()" mat-mini-fab color="primary">
+    <button matTooltip="Gerätepool hinzufügen" (click)="addPool()" mat-mini-fab color="primary">
         <mat-icon>add</mat-icon>
     </button>
 </div>

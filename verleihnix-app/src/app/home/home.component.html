@@ -1,4 +1,4 @@
-<div>
+<div style="position: relative;">
   <nav mat-tab-nav-bar mat-align-tabs="center">
     <a mat-tab-link
        [routerLink]="['./borrow']"
@@ -19,5 +19,22 @@
         Geräte
     </a>
   </nav>
-  <router-outlet></router-outlet>
+  <div style="position: absolute;top:0;right:0;">
+    <div>
+      <button mat-icon-button [matMenuTriggerFor]="menu">
+        <mat-icon>more_vert</mat-icon>
+      </button>
+      <mat-menu #menu="matMenu">
+        <button mat-menu-item (click)="personalEdit()">
+          <mat-icon>person</mat-icon>
+          <span>Benutzerdaten ändern</span>
+        </button>
+        <button mat-menu-item (click)="logOut()">
+          <mat-icon>logout</mat-icon>
+          <span>Abmelden</span>
+        </button>
+      </mat-menu>
+    </div>
+  </div>
 </div>
+<router-outlet></router-outlet>

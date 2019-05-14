@@ -1,9 +1,12 @@
 <div>
     <div>
-        <form (ngSubmit)="onSubmitLogin()" #searchForm="ngForm">
+        <form>
           <mat-form-field>
-              <input name="search" matInput placeholder="" [(ngModel)]="searchValue">
-              <mat-icon matSuffix (click)="search()">{{'search'}}</mat-icon>
+              <input name="search" matInput placeholder="" [(ngModel)]="searchValue" (change)="search()">
+              <mat-icon matPrefix>{{'search'}}</mat-icon>
+              <button mat-button *ngIf="searchValue" matSuffix mat-icon-button aria-label="Clear" (click)="searchValue=''">
+                <mat-icon>close</mat-icon>
+              </button>
             </mat-form-field>
             <br>
             <mat-form-field>
@@ -19,7 +22,7 @@
         </form>
     </div>
     <div>
-      <mat-grid-list cols="3">
+      <mat-grid-list cols="4">
           <mat-grid-tile *ngFor="let device of devices | filter: true:'title':searchValue">
               <mat-card>
                   <mat-card-header>
