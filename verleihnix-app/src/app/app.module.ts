@@ -1,7 +1,7 @@
 import { BrowserModule } from '@angular/platform-browser';
 import { NgModule } from '@angular/core';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
-import { HttpClientModule } from '@angular/common/http';
+import { HttpClientModule, HTTP_INTERCEPTORS } from '@angular/common/http';
 import {DateAdapter, MAT_DATE_FORMATS, MAT_DATE_LOCALE} from '@angular/material/core';
 
 import {MatTabsModule} from '@angular/material/tabs';
@@ -34,7 +34,7 @@ import { DeviceDetailComponent } from './device-detail/device-detail.component';
 import { DeviceEditComponent } from './device-edit/device-edit.component';
 import { DeviceListComponent } from './device-list/device-list.component';
 import { PoolsComponent, AddPoolDialog } from './pools/pools.component';
-import { from } from 'rxjs';
+import { Interceptor } from './services/interceptor.service';
 
 @NgModule({
   entryComponents:[
@@ -83,7 +83,8 @@ import { from } from 'rxjs';
     MatIconModule
   ],
   providers: [
-    {provide: MAT_DATE_LOCALE, useValue: 'de-DE'}
+    {provide: MAT_DATE_LOCALE, useValue: 'de-DE'},
+    {provide: HTTP_INTERCEPTORS, useClass: Interceptor, multi:true}
   ],
   bootstrap: [AppComponent]
 })

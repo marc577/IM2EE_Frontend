@@ -4,10 +4,10 @@
       <mat-expansion-panel *ngFor="let pool of devicePools; let i = index" [expanded]="i == expandedPool" (opened)="setExpanded(i)" (closed)="setClosed(i)">
         <mat-expansion-panel-header>
           <mat-panel-title>
-            {{pool.name}}
+            {{pool.id}}
           </mat-panel-title>
           <mat-panel-description>
-            GerätePool1
+            {{pool.description}}
           </mat-panel-description>
         </mat-expansion-panel-header>
 

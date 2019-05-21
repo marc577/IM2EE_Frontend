@@ -1,11 +1,12 @@
-import { Component, OnInit, Inject } from '@angular/core';
+import { Component, OnInit, Inject, OnDestroy } from '@angular/core';
 
 import { Router, ActivatedRoute } from '@angular/router';
 
-import { AuthService } from 'src/app/services/auth.service';
 import {MatDialog,MatSnackBar, MatDialogRef, MAT_DIALOG_DATA} from '@angular/material';
-import { FormControl } from '@angular/forms';
-import { DataService } from '../services/data.service';
+import { FormControl, Validators } from '@angular/forms';
+import { DataService, User } from '../services/data.service';
+import { Subscription } from 'rxjs';
+
 
 interface DialogData {
   name: string;
@@ -20,26 +21,33 @@ interface DialogData {
   templateUrl: './home.component.html',
   styleUrls: ['./home.component.css']
 })
-export class HomeComponent implements OnInit {
+export class HomeComponent implements OnInit, OnDestroy {
 
-  constructor(private router: Router, private service:AuthService, private dialog: MatDialog) {
-    if(!this.service.isLogedIn()){
-      this.router.navigate(['./login']);
-    }
+  subUser:Subscription;
+  user:User;
+
+  constructor(private router: Router, private service:DataService, private dialog: MatDialog) {
+    this.subUser = this.service.userData.subscribe((val) => {
+      if(val != null){
+        this.user = val;
+      }
+      if(!this.service.isLogedIn()){
+        this.router.navigate(['./login']);
+      }
+    });
   }
 
   ngOnInit() {
+  }
+  ngOnDestroy(){
+    this.subUser.unsubscribe();
   }
 
   personalEdit(){
     const dialogRef = this.dialog.open(EditPersonalDialog, {
       width: '600px',
-      data: {name: "", email:"sds", password:"", newPw:""}
+      data: this.user || {}
     });
-
-    // dialogRef.afterClosed().subscribe( ok => {
-    //   // this.service.addPool(pool);
-    // });
   }
 
   logOut(){
@@ -56,9 +64,12 @@ export class EditPersonalDialog {
   hideOld:boolean;
   hide:boolean;
 
+  oldPW = new FormControl('', [Validators.required]);
+  newPW = new FormControl('', [Validators.required]);
+
   constructor(
     public dialogRef: MatDialogRef<EditPersonalDialog>,
-    @Inject(MAT_DIALOG_DATA) public data: DialogData,
+    @Inject(MAT_DIALOG_DATA) public data: User,
     private service:DataService,
     private snackBar: MatSnackBar
     ) {
@@ -67,18 +78,23 @@ export class EditPersonalDialog {
     }
 
   updatePw(){
-    this.service.updatePw(this.data.password, this.data.newPw);
-    this.snackBar.open("Passwort aktualisiert", "OK", {
-      duration: 2000,
-      verticalPosition:"top"
-    })
+    if(this.oldPW.valid && this.newPW.valid){
+      this.service.updatePw(this.oldPW.value, this.newPW.value);
+      this.snackBar.open("Passwort aktualisiert", "OK", {
+        duration: 2000,
+        verticalPosition:"top"
+      })
+    }
   }
+
   updateUserData(){
-    this.service.updateUserData(this.data.name, this.data.email);
-    this.snackBar.open("Benutzerdaten aktualisiert", "OK", {
-      duration: 2000,
-      verticalPosition:"top"
-    })
+    this.service.updateUserData(this.data).subscribe((val) => {
+      this.snackBar.open("Benutzerdaten aktualisiert", "OK", {
+        duration: 2000,
+        verticalPosition:"top"
+      });
+      this.dialogRef.close();
+    });
   }
   onNoClick(): void {
     this.dialogRef.close();

@@ -1,6 +1,13 @@
 import { Injectable } from '@angular/core';
-import { HttpClient, HttpHeaders } from '@angular/common/http';
+import { HttpClient ,HttpHeaders, HttpResponse, HttpErrorResponse } from '@angular/common/http';
 import { BehaviorSubject, Observable, Subject } from 'rxjs';
+
+export enum HTTP_Codes {
+  OK = 200,
+  BAD_REQUEST = 400,
+  UNAUTHORIZED = 401,
+  NOT_FOUND = 404
+}
 
 
 export interface BorrowDevice {
@@ -21,9 +28,15 @@ export interface Device {
 }
 export interface DevicePool {
   id:number,
-  name:string,
-  desc?: string,
-  devices?: [Device]
+  description: string,
+  basicDevices?: [Device]
+}
+export interface User {
+  id:number,
+  token:string,
+  lastName:string,
+  firstName:string,
+  email:string
 }
 
 const sampleBorrowData = [
@@ -46,11 +59,11 @@ const samppleRequestsData = [
   {id:7, type:1, title:"request7", from: new Date(), to:new Date()}
 ];
 const sampleDeviceData = [
-  {id:1, name: "Pool1", devices:[
+  {id:1, description: "Pool1", devices:[
     {id:1,  title:"Devie1"},
     {id:2, title:"Devie2"}
   ]},
-  {id:2, name: "Pool2", devices:[
+  {id:2, description: "Pool2", devices:[
     {id:4, title:"Devie4"},
     {id:5, title:"Devie5"},
     {id:6, title:"Devie6"},
@@ -65,11 +78,14 @@ const sampleDeviceData = [
 })
 export class DataService {
 
-  private static TOKEN = "vlnx-jwt";
+  public static TOKEN = "vlnx-jwt";
+  public static ROOT = "http://localhost:8080/verleihnix/api/";
 
   private _borrowData: BehaviorSubject<[BorrowDevice]>;
   private _requestData: BehaviorSubject<[Request]>;
-  private _devicesData: BehaviorSubject<[DevicePool]>;
+  private _devicesData: BehaviorSubject<DevicePool[]>;
+  private _userData: BehaviorSubject<User>;
+  private _errorData: BehaviorSubject<HttpErrorResponse>;
 
   public dateFrom:Date;
   public dateTo:Date;
@@ -79,7 +95,9 @@ export class DataService {
   constructor(private http: HttpClient) {
     this._borrowData = <BehaviorSubject<[BorrowDevice]>>new BehaviorSubject(sampleBorrowData);
     this._requestData = <BehaviorSubject<[Request]>>new BehaviorSubject(samppleRequestsData);
-    this._devicesData = <BehaviorSubject<[DevicePool]>>new BehaviorSubject(sampleDeviceData);
+    this._devicesData = <BehaviorSubject<DevicePool[]>>new BehaviorSubject([]);
+    this._userData = <BehaviorSubject<User>>new BehaviorSubject(null);
+    this._errorData = <BehaviorSubject<HttpErrorResponse>>new BehaviorSubject(null);
     this.dateFrom = new Date();
     this.dateTo = new Date();
     this.expandedPool = -1;
@@ -95,23 +113,76 @@ export class DataService {
     return this._requestData.asObservable();
   }
 
+  // User
+  get userData(){
+    const url = DataService.ROOT + "user";
+    this.http.get<User>(url).subscribe(res => {
+      this._userData.next(res);
+    }, (error) => {this.catchError(error)} );
+    return this._userData.asObservable();
+  }
+  logIn(email:string, password:string ) {
+    const url = DataService.ROOT+"user/login";
+    return this.http.post<User>(url, {"email":email,"password": password}).subscribe( res => {
+      localStorage.setItem(DataService.TOKEN, res.token);
+      this._userData.next(res);
+    });
+  }
+  logOut(){
+    localStorage.removeItem(DataService.TOKEN);
+    this._userData.next(null);
+  }
+  isLogedIn(){
+    return localStorage.getItem(DataService.TOKEN) ? true : false;
+  }
+  register(firstName:string, lastName:string, email:string, password:string){
+    const url = DataService.ROOT+"user/register";
+    const data = {
+      "firstName": firstName,
+      "lastName": lastName,
+      "email": email,
+      "password": password
+    }
+    return this.http.post(url, data);
+  }
+  // User
+  updatePw(oldPW:string, newPw:string){
+    console.log("Update PW", oldPW, newPw);
+  }
+  updateUserData(user:User){
+    const url = DataService.ROOT+"user";
+    var subscribtion = this.http.post<User>(url, user);
+    subscribtion.subscribe();
+    subscribtion.subscribe(res => {
+      this._userData.next(res);
+    }, (error) => {
+      this.catchError(error);
+    });
+    return subscribtion;
+  }
+
 
   // Device Pools
   get devicesData(){
-    // http get requests device pools
+    const url = DataService.ROOT + "pool";
+    this.http.get<[DevicePool]>(url).subscribe(res => {
+      this._devicesData.next(res);
+    });
     return this._devicesData.asObservable();
   }
-  addPool(pool:DevicePool){
-    // http add pool here
-    console.log("Add Pool", pool);
+  editPool(pool:DevicePool){
+    if(pool != undefined){
+      const url = DataService.ROOT + "pool";
+      this.http.post(url,pool).subscribe(res => {
+        this.devicesData;
+      });
+    }
   }
   deletePool(pool: DevicePool){
-    // http delete pool here
-    console.log("Delete Pool", pool);
-  }
-  editPool(pool: DevicePool){
-    // http edit pool here
-    console.log("Edit Pool", pool);
+    const url = DataService.ROOT + "pool/"+pool.id;
+    this.http.delete(url).subscribe(res => {
+      this.devicesData;
+    });
   }
 
   // Devices
@@ -130,12 +201,22 @@ export class DataService {
     return sampleBorrowData[0];
   }
 
-  // User
-  updatePw(oldPW:string, newPw:string){
-    console.log("Update PW", oldPW, newPw);
+
+  //erros
+  get error(){
+    return this._errorData.asObservable();
   }
-  updateUserData(name:string, email:string){
-    console.log("Update User Data", name,email);
+  catchError(error: HttpErrorResponse){
+    console.log("HTTPError",error);
+    this._errorData.next(error);
+    switch (error.status) {
+      case HTTP_Codes.UNAUTHORIZED:
+        // this.logOut();
+        break;
+    
+      default:
+        break;
+    }
   }
 
 

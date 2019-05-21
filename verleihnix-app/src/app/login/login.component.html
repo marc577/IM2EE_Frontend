@@ -1,6 +1,6 @@
-<h2>Welkommen bei Verleihnix</h2>
+<h2>Willkommen bei Verleihnix</h2>
 <div>
-  <mat-tab-group mat-align-tabs="center">
+  <mat-tab-group mat-align-tabs="center" [selectedIndex]="selected.value" (selectedIndexChange)="selected.setValue($event)">
       <mat-tab label="Anmelden">
           <ng-template matTabContent>
           <p>Melden Sie sich hier mit Ihrer E-Mail und Ihrem Passwort an.</p>
@@ -26,8 +26,14 @@
               <p>Bitte registrieren Sie sich hier mit Ihrer E-Mail Adresse und einem Passwort.</p>
               <form (ngSubmit)="onSubmitRegister()" #registerForm="ngForm">
                 <mat-form-field>
-                    <input matInput placeholder="Name eingeben" [formControl]="name" required>
-                    <mat-error *ngIf="name.invalid">{{getErrorMessage(name, "Geben Sie einen Namen ein!", ['required'])}}</mat-error>
+                    <input matInput placeholder="Vorname eingeben" [formControl]="fName" required>
+                    <mat-error *ngIf="fName.invalid">{{getErrorMessage(fName, "Geben Sie einen Namen ein!", ['required'])}}</mat-error>
+                </mat-form-field>
+                <br>
+                <br>
+                <mat-form-field>
+                    <input matInput placeholder="Nachname eingeben" [formControl]="lName" required>
+                    <mat-error *ngIf="lName.invalid">{{getErrorMessage(lName, "Geben Sie einen Namen ein!", ['required'])}}</mat-error>
                 </mat-form-field>
                 <br>
                 <br>
@@ -43,7 +49,7 @@
                     <mat-error *ngIf="password.invalid">{{getErrorMessage(password, "Geben Sie ein Passwort an!", ['required'])}}</mat-error>
                 </mat-form-field>
                 <br>
-                <button type="submit" mat-raised-button [disabled]="email.invalid || password.invalid || name.invalid">Anmelden</button>
+                <button type="submit" mat-raised-button [disabled]="email.invalid || password.invalid || lName.invalid || fName.invalid">Anmelden</button>
               </form>
           </ng-template>
       </mat-tab>

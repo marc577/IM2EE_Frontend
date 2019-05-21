@@ -7,8 +7,7 @@ import {MatDialog, MatDialogRef, MAT_DIALOG_DATA} from '@angular/material';
 
 
 interface DialogData {
-  title: string;
-  desc: string;
+  description: string;
 }
 
 @Component({
@@ -19,7 +18,7 @@ interface DialogData {
 export class PoolsComponent implements OnInit, OnDestroy {
 
   subPoolData:Subscription;
-  devicePools:[DevicePool];
+  devicePools:DevicePool[];
   expandedPool:number;
 
   constructor(
@@ -30,12 +29,12 @@ export class PoolsComponent implements OnInit, OnDestroy {
     ) {
       this.subPoolData = this.service.devicesData.subscribe((data) => {
         this.devicePools = data;
+        this.expandedPool = this.service.expandedPool;
       });
       
     }
     
   ngOnInit() {
-      this.expandedPool = this.service.expandedPool;
   }
   ngOnDestroy(){
     this.subPoolData.unsubscribe();
@@ -54,17 +53,17 @@ export class PoolsComponent implements OnInit, OnDestroy {
   addPool(){
     const dialogRef = this.dialog.open(AddPoolDialog, {
       width: '300px',
-      data: {id:-1, name: "", desc:""}
+      data: {id:-1, description:""}
     });
 
-    dialogRef.afterClosed().subscribe( pool=> {
-      this.service.addPool(pool);
+    dialogRef.afterClosed().subscribe( pool => {
+      this.service.editPool(pool);
     });
   }
   editPool(p:DevicePool){
     const dialogRef = this.dialog.open(AddPoolDialog, {
       width: '300px',
-      data: p
+      data: {id:p.id, description:p.description}
     });
 
     dialogRef.afterClosed().subscribe( pool => {
@@ -72,7 +71,7 @@ export class PoolsComponent implements OnInit, OnDestroy {
     });
   }
   deletePool(p:DevicePool){
-    if(confirm("Gerätepool "+p.name+" wirklich löschen?")){
+    if(confirm("Gerätepool "+p.description+" wirklich löschen?")){
       this.service.deletePool(p);
     }
   }

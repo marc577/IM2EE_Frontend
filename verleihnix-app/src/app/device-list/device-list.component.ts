@@ -21,7 +21,7 @@ export class DeviceListComponent implements OnInit {
   dateTo:FormControl;
   minDateTo:Date;
 
-  constructor(private dateAdapter: DateAdapter<Date>,private router: Router, private aRoute: ActivatedRoute, private service:DataService) {
+  constructor(private router: Router, private aRoute: ActivatedRoute, private service:DataService) {
 
     this.subBorrowData = this.service.borrowData.subscribe((data) => {
       this.devices = data;
@@ -37,8 +37,6 @@ export class DeviceListComponent implements OnInit {
     this.dateTo.valueChanges.subscribe((val)=>{
       this.service.dateTo = val;
     });
-    this.dateAdapter.setLocale('de');
-    this.dateAdapter.getFirstDayOfWeek = () => { return 1; }
   }
 
   ngOnInit() {

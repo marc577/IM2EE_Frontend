@@ -24,7 +24,7 @@ export class DeviceDetailComponent implements OnInit, OnDestroy {
   private sub:Subscription;
 
 
-  constructor(private dateAdapter: DateAdapter<Date>,private router: Router, private aRoute: ActivatedRoute, private service:DataService) {
+  constructor(private router: Router, private aRoute: ActivatedRoute, private service:DataService) {
     this.minDateFrom =  new Date();
     this.dateFrom = new FormControl(this.service.dateFrom);
     this.minDateTo = this.dateFrom.value;
@@ -36,8 +36,6 @@ export class DeviceDetailComponent implements OnInit, OnDestroy {
     this.dateTo.valueChanges.subscribe((val)=>{
       this.service.dateTo = val;
     });
-    this.dateAdapter.setLocale('de');
-    this.dateAdapter.getFirstDayOfWeek = () => { return 1; }
   }
   
   ngOnInit() {
