@@ -1,31 +1,66 @@
-<div>
+<div class="spinner" *ngIf="!product">
+    <mat-spinner></mat-spinner>
+</div>
+<div *ngIf="product">
+    <br>
+    <div>
+        <a mat-button routerLink="/home/borrow">
+            <mat-icon>arrow_back</mat-icon>
+        </a>
+    </div>
     <mat-grid-list cols="2" rowHeight="100px">
       <mat-grid-tile colspan="2">
-          <h2>{{device.title}}</h2>
+          <h2>{{product.title}}</h2>
       </mat-grid-tile>
       <mat-grid-tile colspan="1">
-        <img [src]="device.img" alt="Bild Hier">
+        <img alt="Bild Hier">
       </mat-grid-tile>
       <mat-grid-tile colspan="1">
-          <p>Beschreibung</p>
+          <p>{{product.description}}</p>
       </mat-grid-tile>
       <mat-grid-tile colspan="2">
-          <mat-form-field>
+          <mat-form-field style="margin-right: 15px;">
               <input matInput [min]="minDateFrom" [matDatepickerFilter]="dateFilter" [formControl]="dateFrom" [matDatepicker]="pickerfrom" placeholder="von">
               <mat-datepicker-toggle matSuffix [for]="pickerfrom"></mat-datepicker-toggle>
               <mat-datepicker #pickerfrom></mat-datepicker>
           </mat-form-field>
-          <mat-form-field>
+          <mat-form-field style="margin-left: 15px;">
               <input matInput [min]="minDateTo" [matDatepickerFilter]="dateFilter" [formControl]="dateTo" [matDatepicker]="pickerto" placeholder="bis">
               <mat-datepicker-toggle matSuffix [for]="pickerto"></mat-datepicker-toggle>
               <mat-datepicker #pickerto></mat-datepicker>
           </mat-form-field>
-          <mat-form-field>
-              <input matInput #countInput [min]="1" [max]="10" [formControl]="countFormControl" type="number" placeholder="Anzahl">
-              <mat-hint align="end">{{countInput.value || 1}}/10</mat-hint>
-              <mat-error *ngIf="countFormControl.invalid">Nicht verfügbar</mat-error>
-            </mat-form-field>
-          <button (click)="requestDevice()" mat-raised-button color="primary">Anfragen</button>
       </mat-grid-tile>
       </mat-grid-list>
+      <br>
+        <mat-divider></mat-divider>
+        <br>
+        <mat-list>
+            <h3 mat-subheader>Verfügbare Inserate</h3>
+            <mat-list-item *ngFor="let de of filtered">
+                <div mat-line>
+                    <div class="insertion">
+                        <div class="head">
+                            <span>{{de.id}}</span>
+                        </div>
+                        <div class="content">
+                            <h6>{{de.title}}</h6>
+                            <p>{{de.description}}</p>
+                        </div>
+                        <div class="actions">
+                            <button matTooltip="Gerät anfragen" mat-stroked-button (click)="request(de);"><mat-icon>label_important</mat-icon></button>
+                        </div>
+                    </div>
+                </div>
+                <br>
+                <mat-divider></mat-divider>
+                <br>
+            </mat-list-item>
+            <mat-list-item *ngIf="filtered.length == 0">
+                    <div class="insertion">
+                        <div class="head">
+                            <span>Keine Inserate verfügbar</span>
+                        </div>
+                    </div>
+            </mat-list-item>
+        </mat-list>
 </div>

@@ -1,0 +1,10 @@
+.card-content{
+    margin: 0 16px;
+}
+.big-form mat-form-field{
+    width: 80%;
+}
+.half-form > * {
+    display: inline-block;
+    width: 50%;
+}

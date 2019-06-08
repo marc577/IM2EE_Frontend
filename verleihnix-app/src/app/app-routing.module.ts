@@ -11,6 +11,8 @@ import { DeviceDetailComponent } from './device-detail/device-detail.component';
 import { DeviceListComponent } from './device-list/device-list.component';
 import { DeviceEditComponent } from './device-edit/device-edit.component';
 import { PoolsComponent } from './pools/pools.component';
+import { ChatComponent } from './chat/chat.component';
+import { RequestsListComponent } from './requests-list/requests-list.component';
 
 const routes: Routes = [
   {
@@ -27,7 +29,11 @@ const routes: Routes = [
           {path: 'device/:id', component: DeviceDetailComponent},
         ]
       },
-      {path: 'requests', component: RequestsComponent},
+      {path: 'requests', component: RequestsComponent, children: [
+        {path: '', redirectTo: 'list', pathMatch: 'full'},
+        {path: 'list', component: RequestsListComponent},
+        {path: 'chat/:partner', component: ChatComponent},
+      ]},
       {path: 'mydevices', component: DevicesComponent, children:[
         {path: '', redirectTo: 'pools', pathMatch: 'full'},
         {path: 'pools', component: PoolsComponent},

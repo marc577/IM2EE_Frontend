@@ -58,6 +58,7 @@ export class HomeComponent implements OnInit, OnDestroy {
 @Component({
   selector: 'dialog-personal-edit',
   templateUrl: 'personal-edit.dialog.html',
+  styles:[".mat-form-field { width: 100%; }"]
 })
 export class EditPersonalDialog {
 
@@ -79,11 +80,13 @@ export class EditPersonalDialog {
 
   updatePw(){
     if(this.oldPW.valid && this.newPW.valid){
-      this.service.updatePw(this.oldPW.value, this.newPW.value);
-      this.snackBar.open("Passwort aktualisiert", "OK", {
-        duration: 2000,
-        verticalPosition:"top"
-      })
+      this.service.updatePw(this.oldPW.value, this.newPW.value).subscribe(()=>{
+        this.snackBar.open("Passwort aktualisiert", "OK", {
+          duration: 2000,
+          verticalPosition:"top"
+        });
+        this.dialogRef.close();
+      });
     }
   }
 

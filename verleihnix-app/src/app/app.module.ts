@@ -21,13 +21,17 @@ import {MatButtonToggleModule} from '@angular/material/button-toggle';
 import {MatTooltipModule} from '@angular/material/tooltip';
 import {MatMenuModule} from '@angular/material/menu';
 import {MatSnackBarModule} from '@angular/material/snack-bar';
+import {MatStepperModule} from '@angular/material/stepper';
+import {MatAutocompleteModule} from '@angular/material/autocomplete';
+import {MatProgressSpinnerModule} from '@angular/material/progress-spinner';
+import {MatCheckboxModule} from '@angular/material/checkbox';
 
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
 import { LoginComponent } from './login/login.component';
 import { HomeComponent,EditPersonalDialog } from './home/home.component';
 import { BorrowComponent } from './borrow/borrow.component';
-import { RequestsComponent,DialogRejectRequestDialog } from './requests/requests.component';
+import { RequestsComponent } from './requests/requests.component';
 import { DevicesComponent } from './devices/devices.component';
 import { FilterPipe } from './filter.pipe';
 import { DeviceDetailComponent } from './device-detail/device-detail.component';
@@ -35,6 +39,9 @@ import { DeviceEditComponent } from './device-edit/device-edit.component';
 import { DeviceListComponent } from './device-list/device-list.component';
 import { PoolsComponent, AddPoolDialog } from './pools/pools.component';
 import { Interceptor } from './services/interceptor.service';
+import { RequestsListComponent, DialogRejectRequestDialog } from './requests-list/requests-list.component';
+import { ChatComponent } from './chat/chat.component';
+import { CommonModule } from '@angular/common';
 
 @NgModule({
   entryComponents:[
@@ -56,10 +63,13 @@ import { Interceptor } from './services/interceptor.service';
     DialogRejectRequestDialog,
     PoolsComponent,
     AddPoolDialog,
-    EditPersonalDialog
+    EditPersonalDialog,
+    RequestsListComponent,
+    ChatComponent
   ],
   imports: [
     BrowserModule,
+    CommonModule,
     AppRoutingModule,
     HttpClientModule,
     FormsModule,
@@ -74,9 +84,13 @@ import { Interceptor } from './services/interceptor.service';
     MatExpansionModule,
     MatRadioModule,
     MatListModule,
+    MatAutocompleteModule,
     MatChipsModule,
+    MatCheckboxModule,
+    MatProgressSpinnerModule,
     MatTooltipModule,
     MatSnackBarModule,
+    MatStepperModule,
     MatButtonToggleModule,
     MatCardModule,
     MatDialogModule,

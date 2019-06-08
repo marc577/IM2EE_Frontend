@@ -1,0 +1,15 @@
+.insertion {
+    display: flex;
+    justify-content: flex-end;
+    align-items: center;
+}
+.insertion .head{
+    margin-right: auto;
+}
+.insertion h4{
+    display:inline;
+    margin-left: 15px;
+}
+.insertion mat-chip-list{
+    margin-right: 15px;
+}

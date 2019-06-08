@@ -1,7 +1,7 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
 import { Router, ActivatedRoute } from '@angular/router';
 import { FormControl, Validators } from '@angular/forms';
-import { DataService, BorrowDevice } from 'src/app/services/data.service';
+import { DataService, Product } from 'src/app/services/data.service';
 import { Subscription } from 'rxjs';
 import { DateAdapter } from '@angular/material/core';
 
@@ -12,8 +12,8 @@ import { DateAdapter } from '@angular/material/core';
 })
 export class DeviceListComponent implements OnInit {
 
-  devices:[BorrowDevice];
-  subBorrowData: Subscription;
+  devices:Product[];
+  subProductData: Subscription;
 
   searchValue:string;
   dateFrom:FormControl;
@@ -23,7 +23,7 @@ export class DeviceListComponent implements OnInit {
 
   constructor(private router: Router, private aRoute: ActivatedRoute, private service:DataService) {
 
-    this.subBorrowData = this.service.borrowData.subscribe((data) => {
+    this.subProductData = this.service.productData.subscribe((data) => {
       this.devices = data;
     });
     this.minDateFrom =  new Date();
@@ -44,7 +44,7 @@ export class DeviceListComponent implements OnInit {
   }
 
   ngOnDestroy(){
-    this.subBorrowData.unsubscribe();
+    this.subProductData.unsubscribe();
   }
   search(){
     this.service.searchString = this.searchValue;

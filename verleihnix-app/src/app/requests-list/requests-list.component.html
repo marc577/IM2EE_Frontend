@@ -1,0 +1,59 @@
+<div>
+    <br>
+    <div class="center-content">
+        <mat-button-toggle-group
+          [(ngModel)]="requestType"
+          name="requestFilter"
+          (change)="requestFilterChanged($event)"
+          aria-label="Filter">
+            <mat-button-toggle value="0">Alle</mat-button-toggle>
+            <mat-button-toggle value="1">Eingang</mat-button-toggle>
+            <mat-button-toggle value="2">Ausgang</mat-button-toggle>
+          </mat-button-toggle-group>
+  
+        <!-- <mat-radio-group
+        [(ngModel)]="requestType"
+        (change)="requestFilterChanged($event)">
+            <mat-radio-button value="0">Alle</mat-radio-button>
+            <mat-radio-button value="1">Eingang</mat-radio-button>
+            <mat-radio-button value="2">Ausgang</mat-radio-button>
+          </mat-radio-group> -->
+    </div>
+    <div class="center-content">
+    <mat-list>
+        <h3 *ngIf="requestType == 0" mat-subheader>Alle</h3>
+        <h3 *ngIf="requestType == 1" mat-subheader>Eingang</h3>
+        <h3 *ngIf="requestType == 2" mat-subheader>Ausgang</h3>
+        <mat-list-item *ngFor="let re of requests | filter: filterActive:'type':requestType">
+          <mat-icon *ngIf="re.type == 1" mat-list-icon>assignment_returned</mat-icon>
+          <mat-icon *ngIf="re.type == 2" mat-list-icon>assignment_return</mat-icon>
+          <div class="request">
+            <div class="request-info">
+              <h4 *ngIf="re.type == 1" mat-line>Anfrage</h4>
+              <h4 *ngIf="re.type == 2" mat-line>Ausganng</h4>
+              <p mat-line> {{re.dateFrom * 1000 | date}} bis {{re.dateTo * 1000 | date}}</p>
+            </div>
+            <div class="request-content">
+            </div>
+            <div class="request-action">
+              <div>
+                <mat-chip-list *ngIf="re.type == 2">
+                  <mat-chip selected color="primary">Offen</mat-chip>
+                  <mat-chip>Aktzeptiert</mat-chip>
+                  <mat-chip>Abgelehnt</mat-chip>
+                </mat-chip-list>
+              </div>
+              <div *ngIf="re.type == 1">
+                <button mat-raised-button color="primary" style="margin-right: 15px;">Aktzeptieren</button>
+                <button (click)="rejectRequest(re.id)" mat-raised-button>Ablehnen</button>
+              </div>
+              <a mat-stroked-button style="margin-left: 15px;" routerLink="/home/requests/chat/1">
+                  <mat-icon>chat_bubble_outline</mat-icon>
+              </a>
+            </div>
+          </div>
+          <mat-divider></mat-divider>
+        </mat-list-item>
+      </mat-list>
+    </div>
+  </div>

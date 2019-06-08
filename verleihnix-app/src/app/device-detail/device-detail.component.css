@@ -1,0 +1,31 @@
+.spinner {
+    padding-top: 15px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+.insertion {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+.insertion .head{
+    margin-right: auto;
+}
+.insertion h6{
+    display:inline;
+    text-align: left;
+}
+.insertion .actions{
+    margin-left: auto;
+}
+.insertion mat-chip-list{
+    margin-right: 15px;
+}
+.insertion .content{
+    margin-left: 25px;
+    flex-grow: 1;
+}
+.insertion p{
+    font-size: 0.67em;
+}

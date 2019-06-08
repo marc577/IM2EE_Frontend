@@ -1,3 +1,73 @@
-<p>
-  device-edit works!
-</p>
+<div>
+  <br>
+    <div>
+        <a mat-button routerLink="/home/mydevices/pools">
+            <mat-icon>arrow_back</mat-icon>
+        </a>
+    </div>
+  <mat-card>
+      <mat-card-header>
+          <mat-card-title>Produkt wählen</mat-card-title>
+          <mat-card-subtitle *ngIf="product != null">Vorhandes Produkt nutzen</mat-card-subtitle>
+          <mat-card-subtitle *ngIf="product == null">Neues Produkt anlegen</mat-card-subtitle>
+        </mat-card-header>
+        <mat-card-content>
+            <form [formGroup]="firstFormGroup" class="card-content half-form" >
+                <mat-form-field style="width:300px;margin-right:15px;">
+                    <input required type="text" placeholder="Produkt auswählen" matInput formControlName="productCtrl" [matAutocomplete]="auto">
+                    <mat-autocomplete autoActiveFirstOption #auto="matAutocomplete">
+                      <mat-option *ngFor="let option of filteredOptions | async" [value]="option.title" (onSelectionChange)="selected(option);" >
+                        {{option.title}}
+                      </mat-option>
+                    </mat-autocomplete>
+                </mat-form-field>
+                <p style="display: inline;" *ngIf="product != null">{{product.description}}</p>
+                <mat-form-field *ngIf="product == null">
+                    <mat-label>Produktbeschreibung</mat-label>
+                    <textarea matInput
+                              required
+                              formControlName="descCtrl"
+                              cdkTextareaAutosize
+                              #autosize="cdkTextareaAutosize"
+                              cdkAutosizeMinRows="2"
+                              cdkAutosizeMaxRows="5"></textarea>
+                  </mat-form-field>
+              </form>
+        </mat-card-content>
+  </mat-card>
+  <br>
+  <mat-card>
+      <mat-card-header>
+          <mat-card-title>Gerätedetails</mat-card-title>
+          <mat-card-subtitle *ngIf="!insertion">Neues Inserat einfügen</mat-card-subtitle>
+          <mat-card-subtitle *ngIf="insertion">Inserat bearbeiten</mat-card-subtitle>
+          <!-- <mat-card-subtitle>Inserat bearbeiten</mat-card-subtitle> -->
+        </mat-card-header>
+        <mat-card-content class="card-content">
+            <form [formGroup]="secondFormGroup" class="big-form">
+                <mat-form-field>
+                    <input required type="text" [(ngModel)]="insertion.title" placeholder="Titel / Version" matInput formControlName="titleCtrl">
+                </mat-form-field>
+                <br>
+                <mat-form-field>
+                    <mat-label>Produktbeschreibung / Zustand</mat-label>
+                    <textarea matInput
+                              required
+                              [(ngModel)]="insertion.description"
+                              formControlName="descriptionCtrl"
+                              cdkTextareaAutosize
+                              #autosize="cdkTextareaAutosize"
+                              cdkAutosizeMinRows="2"
+                              cdkAutosizeMaxRows="5"></textarea>
+                </mat-form-field>
+                <br>
+                <mat-checkbox  [(ngModel)]="insertion.active" formControlName="activeRequired">Geräte verfügbar</mat-checkbox>
+              </form>
+        </mat-card-content>
+        <mat-card-content class="card-content" align="end">
+          <div class="actions">
+              <button matTooltip="Speichern" [disabled]="secondFormGroup.invalid || firstFormGroup.invalid" mat-stroked-button (click)="save()">Speichern</button>
+          </div>
+        </mat-card-content>
+  </mat-card>
+</div>

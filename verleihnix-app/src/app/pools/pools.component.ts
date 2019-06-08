@@ -1,7 +1,7 @@
 import { Component, OnInit, OnDestroy, Inject } from '@angular/core';
 import { Router, ActivatedRoute } from '@angular/router';
 import { FormControl, Validators } from '@angular/forms';
-import { DataService, DevicePool, Device } from 'src/app/services/data.service';
+import { DataService, Pool, Insertion } from 'src/app/services/data.service';
 import { Subscription } from 'rxjs';
 import {MatDialog, MatDialogRef, MAT_DIALOG_DATA} from '@angular/material';
 
@@ -18,7 +18,7 @@ interface DialogData {
 export class PoolsComponent implements OnInit, OnDestroy {
 
   subPoolData:Subscription;
-  devicePools:DevicePool[];
+  devicePools:Pool[];
   expandedPool:number;
 
   constructor(
@@ -43,9 +43,9 @@ export class PoolsComponent implements OnInit, OnDestroy {
   goToEdit(poolId:number, deviceId:number){
     this.router.navigate(["../device-edit", poolId, deviceId], {relativeTo:this.aRoute});
   }
-  deleteDevice(p:Device){
+  deleteDevice(p:Insertion){
     if(confirm("Gerät "+p.title+" wirklich löschen?")){
-      this.service.deleteDevice(p);
+      this.service.deleteInsertion(p.id);
     }
   }
 
@@ -60,7 +60,7 @@ export class PoolsComponent implements OnInit, OnDestroy {
       this.service.editPool(pool);
     });
   }
-  editPool(p:DevicePool){
+  editPool(p:Insertion){
     const dialogRef = this.dialog.open(AddPoolDialog, {
       width: '300px',
       data: {id:p.id, description:p.description}
@@ -70,7 +70,7 @@ export class PoolsComponent implements OnInit, OnDestroy {
       this.service.editPool(pool);
     });
   }
-  deletePool(p:DevicePool){
+  deletePool(p:Insertion){
     if(confirm("Gerätepool "+p.description+" wirklich löschen?")){
       this.service.deletePool(p);
     }
@@ -89,6 +89,7 @@ export class PoolsComponent implements OnInit, OnDestroy {
 @Component({
   selector: 'dialog-add-pool',
   templateUrl: 'add-pool.dialog.html',
+  styles:[".mat-form-field { width: 100%; }"]
 })
 export class AddPoolDialog {
 

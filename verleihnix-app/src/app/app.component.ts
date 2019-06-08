@@ -21,7 +21,7 @@ export class AppComponent implements OnDestroy {
     this.subError = this.service.error.subscribe((error: HttpErrorResponse) =>{
       if(error != null){
         this.snackBar.open(error.message, "OK", {
-          duration: 2000,
+          duration: 3000,
           verticalPosition:"top"
         })
       }

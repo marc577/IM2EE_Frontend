@@ -1,0 +1,25 @@
+
+.product-filter{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+.product-filter form {
+    width:60%;
+}
+
+.product-filter mat-form-field {
+    width: 100%;
+}
+
+.device-list{
+    display: flex;
+    justify-content: center;
+    flex-wrap: wrap;
+}
+.product-card{
+    width:300px;
+    margin-left: 10px;
+    margin-right: 10px;
+    margin-bottom: 15px;
+}
