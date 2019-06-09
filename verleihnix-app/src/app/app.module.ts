@@ -34,7 +34,7 @@ import { BorrowComponent } from './borrow/borrow.component';
 import { RequestsComponent } from './requests/requests.component';
 import { DevicesComponent } from './devices/devices.component';
 import { FilterPipe } from './filter.pipe';
-import { DeviceDetailComponent } from './device-detail/device-detail.component';
+import { DeviceDetailComponent, DialogNewRequestDialog } from './device-detail/device-detail.component';
 import { DeviceEditComponent } from './device-edit/device-edit.component';
 import { DeviceListComponent } from './device-list/device-list.component';
 import { PoolsComponent, AddPoolDialog } from './pools/pools.component';
@@ -46,6 +46,7 @@ import { CommonModule } from '@angular/common';
 @NgModule({
   entryComponents:[
     DialogRejectRequestDialog,
+    DialogNewRequestDialog,
     AddPoolDialog,
     EditPersonalDialog
   ],
@@ -61,6 +62,7 @@ import { CommonModule } from '@angular/common';
     DeviceEditComponent,
     DeviceListComponent,
     DialogRejectRequestDialog,
+    DialogNewRequestDialog,
     PoolsComponent,
     AddPoolDialog,
     EditPersonalDialog,

@@ -1,0 +1,33 @@
+.headhead{
+    display: flex;
+}
+.head{
+   background-color: #3f51b5;
+   width: 50%;
+}
+.head2 {
+    width: 50%;
+}
+.head-img{
+    margin-top: 10px;
+    margin-bottom: 5px;
+    background: url("../../assets/head.jpg");
+    background-repeat: no-repeat;
+    height: 180px;
+    background-size:contain;
+    background-position: center;
+}
+.head h1 {
+    color:white;
+    margin-top: 5px;
+    margin-left: 35px;
+    margin-bottom: 0px;
+    font-family: fantasy;
+    font-size: 3em;
+}
+.head h5 {
+    color:white;
+    margin-left: 35px;
+    margin-bottom: 0px;
+}
+.mat-form-field { width: 80%; }

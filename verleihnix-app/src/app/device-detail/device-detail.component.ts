@@ -1,14 +1,21 @@
-import { Component, OnInit, OnDestroy } from '@angular/core';
+import { Component, OnInit, OnDestroy, Inject } from '@angular/core';
 import { Router, ActivatedRoute } from '@angular/router';
 import { FormControl, Validators } from '@angular/forms';
-import { Insertion, DataService, Product } from 'src/app/services/data.service';
+import { Insertion, DataService, Product, NewRequest } from 'src/app/services/data.service';
 import { Subscription } from 'rxjs';
+import {MatDialog, MatDialogRef, MAT_DIALOG_DATA, MatSnackBar} from '@angular/material';
+import { DatePipe } from '@angular/common';
+
+interface DialogData {
+  comment: string;
+}
 
 
 @Component({
   selector: 'app-device-detail',
   templateUrl: './device-detail.component.html',
-  styleUrls: ['./device-detail.component.css']
+  styleUrls: ['./device-detail.component.css'],
+  providers:[DatePipe]
 })
 export class DeviceDetailComponent implements OnInit, OnDestroy {
 
@@ -18,12 +25,13 @@ export class DeviceDetailComponent implements OnInit, OnDestroy {
   minDateTo:Date;
   product:Product;
   filtered:Insertion[];
+  days = 1;
   private subProduct:Subscription;
   private id:number;
   private sub:Subscription;
 
 
-  constructor(private router: Router, private aRoute: ActivatedRoute, private service:DataService) {
+  constructor(private datePipe: DatePipe, private router: Router, private aRoute: ActivatedRoute, private service:DataService, private dialog: MatDialog, private snackBar: MatSnackBar) {
     this.minDateFrom =  new Date();
     this.dateFrom = new FormControl(this.service.dateFrom);
     this.minDateTo = this.dateFrom.value;
@@ -39,16 +47,20 @@ export class DeviceDetailComponent implements OnInit, OnDestroy {
       this.filter();
     });
   }
-  
-  ngOnInit() {
+
+  load(){
     this.sub = this.aRoute.params.subscribe(params => {
       this.id = +params['id'];
       this.subProduct = this.service.getProduct(this.id).subscribe((p)=>{
         this.product = p;
+        console.log("P",this.product);
         this.filter();
       });
     });
-
+  }
+  
+  ngOnInit() {
+    this.load();
   }
   ngOnDestroy(){
     this.sub.unsubscribe();
@@ -63,9 +75,13 @@ export class DeviceDetailComponent implements OnInit, OnDestroy {
       if(this.dateFrom.invalid || this.dateTo.invalid){
         return false;
       }
+
       const from = this.dateFrom.value.getTime();
       const to = this.dateTo.value.getTime();
-      var requests = element.insertionStateCalendars;
+
+      var diff = Math.abs(to - from);
+      this.days = Math.ceil(diff / (1000 * 3600 * 24)) + 1;
+      var requests = element.insertionRequests;
       console.log(requests);
       if(!requests) return false;
       for (let index = 0; index < requests.length; index++) {
@@ -94,7 +110,52 @@ export class DeviceDetailComponent implements OnInit, OnDestroy {
   }
 
   request(d:Insertion){
-    console.log("re", d);
+    var msg = "Ich möchte gerne Ihr Produkt gerne vom " + this.datePipe.transform(this.dateFrom.value)+ " bis zum ";
+    msg += this.datePipe.transform(this.dateFrom.value) + " ausleihen!";
+    const dialogRef = this.dialog.open(DialogNewRequestDialog, {
+      width: '300px',
+      data: {comment: msg}
+    });
+
+    dialogRef.afterClosed().subscribe(comment => {
+      if(comment){
+        //Anfrgae erstellen
+        const data:NewRequest = {
+          message:comment,
+          dateTo:this.dateTo.value,
+          dateFrom:this.dateFrom.value,
+          insertionId: d.id
+        }
+        this.service.requestInsertion(data).subscribe((val)=>{
+          this.load();
+          this.snackBar.open("Anfrage versendet!", "OK", {
+            duration: 2000,
+            verticalPosition:"top"
+          });
+        }, (er)=> {
+          this.service.catchError(er);
+        });
+      }
+    });
   }
 
 }
+
+
+@Component({
+  selector: 'dialog-new-request',
+  templateUrl: 'dialog-new-request.html',
+  styles:[".mat-form-field { width: 100%; }"]
+})
+export class DialogNewRequestDialog {
+
+  constructor(
+    public dialogRef: MatDialogRef<DialogNewRequestDialog>,
+    @Inject(MAT_DIALOG_DATA) public data: DialogData) {}
+
+  onNoClick(): void {
+    this.dialogRef.close();
+  }
+
+}
+

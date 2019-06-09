@@ -61,6 +61,10 @@
                               cdkAutosizeMaxRows="5"></textarea>
                 </mat-form-field>
                 <br>
+                <mat-form-field>
+                  <input required type="number" [(ngModel)]="insertion.pricePerDay" placeholder="Preis pro Tag (€)" matInput formControlName="priceCtrl">
+                </mat-form-field>
+                <br>
                 <mat-checkbox  [(ngModel)]="insertion.active" formControlName="activeRequired">Geräte verfügbar</mat-checkbox>
               </form>
         </mat-card-content>

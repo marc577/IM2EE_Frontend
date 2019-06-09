@@ -32,7 +32,7 @@ const routes: Routes = [
       {path: 'requests', component: RequestsComponent, children: [
         {path: '', redirectTo: 'list', pathMatch: 'full'},
         {path: 'list', component: RequestsListComponent},
-        {path: 'chat/:partner', component: ChatComponent},
+        {path: 'chat/:request', component: ChatComponent},
       ]},
       {path: 'mydevices', component: DevicesComponent, children:[
         {path: '', redirectTo: 'pools', pathMatch: 'full'},

@@ -11,11 +11,11 @@
       <div *ngFor="let me of messages">
           <div>
             <div class="chat-line">
-                <div [ngClass]="{'end': me.type == 0, 'front': me.type!= 0}" class="chat-content">
+                <div [ngClass]="{'end': me.senderId == user.id, 'front': me.senderId!= user.id}" class="chat-content">
                     <p class="speech-bubble">
-                      <span class="speech-date">{{me.date | date:'medium'}}</span>
+                      <span class="speech-date">{{me.sendDate | date:'medium'}}</span>
                       <br>
-                      <span class="speech-content">{{me.content}}</span>
+                      <span class="speech-content">{{me.message}}</span>
                     </p>
                 </div>
             </div>

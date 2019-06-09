@@ -86,7 +86,7 @@ export class EditPersonalDialog {
           verticalPosition:"top"
         });
         this.dialogRef.close();
-      });
+      }, (er)=> {this.service.catchError(er)});
     }
   }
 
@@ -97,7 +97,7 @@ export class EditPersonalDialog {
         verticalPosition:"top"
       });
       this.dialogRef.close();
-    });
+    }, (er)=>{this.service.catchError(er)});
   }
   onNoClick(): void {
     this.dialogRef.close();

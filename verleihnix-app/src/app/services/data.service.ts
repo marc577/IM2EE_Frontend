@@ -22,6 +22,18 @@ export interface Product {
   description:string,
   insertions? :Insertion[]
 }
+
+export interface NewRequest {
+  // id: number,
+  // state: string,
+  dateFrom:number,
+  dateTo:number,
+  // editAt: number,
+  message:string,
+  // type: number,
+  insertionId:number
+
+}
 export interface Request {
   id: number,
   state: string,
@@ -36,7 +48,9 @@ export interface Insertion {
   title: string,
   image: null,
   active: boolean,
-  insertionStateCalendars?: Request[]
+  pricePerDay: number,
+  insertionStateCalendars?: Request[],
+  insertionRequests?: Request[]
 }
 export interface Pool {
   id:number,
@@ -51,9 +65,11 @@ export interface User {
   email:string
 }
 export interface Message {
-  date: number,
-  content: string,
-  type:number
+  sendDate: number,
+  message: string,
+  senderId:number,
+  id:number,
+  readByListener:boolean
 }
 
 const sampleProductData = [
@@ -94,13 +110,13 @@ const sampleDeviceData = [
 ];
 
 const sampleChatData:Message[] = [
-  {date: 1558607603, content: "Hallo du deppHallo du deppHallo du deppHallo du deppHallo du deppHallo du deppHallo du deppHallo du deppHallo du deppHallo du deppHallo du depp", type:0},
-  {date: 1558607603, content: "Hallo du depp1", type:1},
-  {date: 1558607603, content: "Hallo du depp3", type:0},
-  {date: 1558607603, content: "Hallo du dep44Hallo du deppHallo du deppHallo du deppHallo du deppHallo du deppHallo du deppHallo du deppHallo du deppHallo du deppHallo du deppHallo du deppHallo du deppHallo du depp", type:0},
-  {date: 1558607603, content: "Hallo du depdsfdsfp", type:1},
-  {date: 1558607603, content: "Hallo du depdsfp", type:1},
-  {date: 1558607603, content: "Hallo du", type:0},
+  // {date: 1558607603, content: "Hallo du deppHallo du deppHallo du deppHallo du deppHallo du deppHallo du deppHallo du deppHallo du deppHallo du deppHallo du deppHallo du depp", type:0},
+  // {date: 1558607603, content: "Hallo du depp1", type:1},
+  // {date: 1558607603, content: "Hallo du depp3", type:0},
+  // {date: 1558607603, content: "Hallo du dep44Hallo du deppHallo du deppHallo du deppHallo du deppHallo du deppHallo du deppHallo du deppHallo du deppHallo du deppHallo du deppHallo du deppHallo du deppHallo du depp", type:0},
+  // {date: 1558607603, content: "Hallo du depdsfdsfp", type:1},
+  // {date: 1558607603, content: "Hallo du depdsfp", type:1},
+  // {date: 1558607603, content: "Hallo du", type:0},
 ];
 
 
@@ -125,7 +141,7 @@ export class DataService {
 
   constructor(private http: HttpClient) {
     this._productData = <BehaviorSubject<Product[]>>new BehaviorSubject([]);
-    this._requestData = <BehaviorSubject<Request[]>>new BehaviorSubject(samppleRequestsData);
+    this._requestData = <BehaviorSubject<Request[]>>new BehaviorSubject([]);
     this._devicesData = <BehaviorSubject<Pool[]>>new BehaviorSubject([]);
     this._userData = <BehaviorSubject<User>>new BehaviorSubject(null);
     this._errorData = <BehaviorSubject<HttpErrorResponse>>new BehaviorSubject(null);
@@ -135,14 +151,34 @@ export class DataService {
     this.searchString = undefined;
   }
 
+  // Requests
   get requestData(){
-    // http get requests odered by date data
+    const url = DataService.ROOT + "insertionRequest";
+    this.http.get<Request[]>(url).subscribe(res => {
+      console.log(res);
+      this._requestData.next(res);
+    }, (error) => {
+      this.catchError(error);
+    });
     return this._requestData.asObservable();
+  }
+  requestInsertion(request:NewRequest){
+    const url = DataService.ROOT+"insertionRequest"
+    return this.http.post<NewRequest>(url, request);
+  }
+  setRequestState(requestId:number, data : {message: string, state:number}){
+    const url = DataService.ROOT+"insertionRequest/state/"+requestId;
+    return this.http.post<NewRequest>(url, data);
   }
 
   // Chat
-  getChatData(partnerId: number){
-    return new BehaviorSubject(sampleChatData).asObservable();
+  getChatData(requestId: number){
+    const url = DataService.ROOT + "chat/"+requestId;
+    return this.http.get<Message[]>(url);
+  }
+  sendMessage(message:{idSender:number, message:string, idInsertionRequest:number}){
+    const url = DataService.ROOT+"chat";
+    return this.http.post<Message>(url, message);
   }
 
   // User
@@ -199,6 +235,7 @@ export class DataService {
   get productData(){
     const url = DataService.ROOT + "product";
     this.http.get<Product[]>(url).subscribe(res => {
+      console.log("sdsd", res);
       this._productData.next(res);
     }, (error) => {
       this.catchError(error);

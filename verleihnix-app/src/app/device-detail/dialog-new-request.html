@@ -1,0 +1,11 @@
+<h1 mat-dialog-title>Anfrage erstellen</h1>
+<div mat-dialog-content>
+  <p>Bearbeiten Sie die Nachricht an den Geräteinhaber.</p>
+  <mat-form-field>
+    <textarea rows="6" matInput cdkFocusInitial [(ngModel)]="data.comment"></textarea>
+  </mat-form-field>
+</div>
+<div mat-dialog-actions>
+  <button [disabled]="!data.comment" mat-button [mat-dialog-close]="data.comment">Ok</button>
+  <button mat-button [mat-dialog-close]="undefined">Abbrechen</button>
+</div>

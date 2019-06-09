@@ -3,9 +3,18 @@
 
 body{
     font-family: Roboto,"Helvetica Neue",sans-serif;
+    margin:0;
+    padding:0;
 }
 .center-content{
     display: flex;
     justify-content: center;
     align-items: center;
+}
+.mat-tab-body.mat-tab-body-active{
+    display: flex;
+    justify-content: center;
+}
+.mat-tab-body-content{
+    width:80%;
 }

@@ -1,8 +1,9 @@
 import { Component, OnInit, OnDestroy, ViewChild, ElementRef, AfterViewChecked } from '@angular/core';
-import { DataService, Message } from '../services/data.service';
+import { DataService, Message, User } from '../services/data.service';
 import { Subscription } from 'rxjs';
 import { ActivatedRoute } from '@angular/router';
 import { FormControl, Validators } from '@angular/forms';
+import { load } from '@angular/core/src/render3';
 
 @Component({
   selector: 'app-chat',
@@ -16,15 +17,27 @@ export class ChatComponent implements OnInit, OnDestroy, AfterViewChecked {
 
   @ViewChild('scrollMe') private myScrollContainer: ElementRef;
 
+  user:User;
+  subUser:Subscription;
   message = new FormControl('', [Validators.required]);
   messages:Message[];
+  request:number;
 
   constructor(private service:DataService, private aRoute: ActivatedRoute) {
+    this.subUser = this.service.userData.subscribe(d => {
+      this.user = d;
+    })
     this.sub = this.aRoute.params.subscribe(params => {
-      const partner = +params['partner'];
-      this.subChat = this.service.getChatData(partner).subscribe((data)=>{
-        this.messages = data;
-      });
+      this.request = +params['request'];
+      this.load();
+    });
+  }
+
+  load(){
+    if(this.subChat) this.subChat.unsubscribe();
+    this.subChat = this.service.getChatData(this.request).subscribe((data)=>{
+      console.log(data);
+      this.messages = data;
     });
   }
   
@@ -39,6 +52,7 @@ export class ChatComponent implements OnInit, OnDestroy, AfterViewChecked {
   ngOnDestroy(){
     this.sub.unsubscribe();
     this.subChat.unsubscribe();
+    this.subUser.unsubscribe();
   }
   scrollToBottom(): void {
     try {
@@ -48,7 +62,14 @@ export class ChatComponent implements OnInit, OnDestroy, AfterViewChecked {
 
   send(){
     if(this.message.invalid) return;
-    console.log("Send", this.message.value);
+    this.service.sendMessage({
+      message: this.message.value,
+      idSender: this.user.id,
+      idInsertionRequest: this.request
+    }).subscribe((me)=>{
+      this.message.setValue("");
+      this.load();
+    }, (er) => {this.service.catchError(er)});
   }
 
 }

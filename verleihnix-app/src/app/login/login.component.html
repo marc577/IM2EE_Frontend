@@ -1,24 +1,35 @@
-<h2>Willkommen bei Verleihnix</h2>
+<div class="headhead">
+    <div class="head">
+        <br>
+        <h5>Willkommen bei </h5>
+        <h1>Verleihnix</h1>
+    </div>
+    <div class="head2">
+        <div class="head-img"></div>
+    </div>
+</div>
 <div>
   <mat-tab-group mat-align-tabs="center" [selectedIndex]="selected.value" (selectedIndexChange)="selected.setValue($event)">
       <mat-tab label="Anmelden">
           <ng-template matTabContent>
-          <p>Melden Sie sich hier mit Ihrer E-Mail und Ihrem Passwort an.</p>
-          <form (ngSubmit)="onSubmitLogin()" #loginForm="ngForm">
-            <mat-form-field>
-                <input name="email" matInput placeholder="E-Mail eingeben" [formControl]="email" required>
-                <mat-error *ngIf="email.invalid">{{getErrorMessage(email, "Geben Sie eine valide E-Mail Adresse an!", ['required', 'email'])}}</mat-error>
-            </mat-form-field>
-            <br>
-            <br>
-            <mat-form-field>
-                <input name="password" matInput placeholder="Passwort eingeben" [type]="hide ? 'password' : 'text'" required [formControl]="password">
-                <mat-icon matSuffix (click)="hide = !hide">{{hide ? 'visibility_off' : 'visibility'}}</mat-icon>
-                <mat-error *ngIf="password.invalid">{{getErrorMessage(password, "Geben Sie ein Passwort an!", ['required'])}}</mat-error>
-              </mat-form-field>
-              <br>
-              <button type="submit" mat-raised-button [disabled]="email.invalid || password.invalid">Anmelden</button>
-            </form>
+            <div class="login-container">
+                <p>Melden Sie sich hier mit Ihrer E-Mail und Ihrem Passwort an.</p>
+                <form (ngSubmit)="onSubmitLogin()" #loginForm="ngForm">
+                  <mat-form-field>
+                      <input name="email" matInput placeholder="E-Mail eingeben" [formControl]="email" required>
+                      <mat-error *ngIf="email.invalid">{{getErrorMessage(email, "Geben Sie eine valide E-Mail Adresse an!", ['required', 'email'])}}</mat-error>
+                  </mat-form-field>
+                  <br>
+                  <br>
+                  <mat-form-field>
+                      <input name="password" matInput placeholder="Passwort eingeben" [type]="hide ? 'password' : 'text'" required [formControl]="password">
+                      <mat-icon matSuffix (click)="hide = !hide">{{hide ? 'visibility_off' : 'visibility'}}</mat-icon>
+                      <mat-error *ngIf="password.invalid">{{getErrorMessage(password, "Geben Sie ein Passwort an!", ['required'])}}</mat-error>
+                    </mat-form-field>
+                    <br>
+                    <button type="submit" mat-raised-button [disabled]="email.invalid || password.invalid">Anmelden</button>
+                  </form>
+            </div>
           </ng-template>
       </mat-tab>
       <mat-tab label="Registrieren">

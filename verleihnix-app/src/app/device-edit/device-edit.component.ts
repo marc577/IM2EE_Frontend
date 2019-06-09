@@ -34,7 +34,7 @@ export class DeviceEditComponent implements OnInit, OnDestroy {
   constructor(private _formBuilder: FormBuilder, private service:DataService, private aRoute:ActivatedRoute, private snackBar: MatSnackBar) {
     this.newProduct = true;
     this.product = null;
-    this.insertion = {title:"", description:"", active:true, id:-1, image:null};
+    this.insertion = {title:"", description:"", active:true, id:-1, image:null, pricePerDay: 0.0};
     this.subProducts = this.service.productData.subscribe((products) => {
       this.products = products;
     });
@@ -62,6 +62,7 @@ export class DeviceEditComponent implements OnInit, OnDestroy {
     this.secondFormGroup = this._formBuilder.group({
       titleCtrl: ['', Validators.required],
       descriptionCtrl: ['', Validators.required],
+      priceCtrl: [0],
       activeRequired: true,
     });
     this.filteredOptions = this.productCtrl.valueChanges.pipe(
@@ -96,7 +97,9 @@ export class DeviceEditComponent implements OnInit, OnDestroy {
     if(this.product == null && this.firstFormGroup.valid){
       this.product = {title: this.productCtrl.value, description: this.descCtrl.value, id:-1};
     }
+    //this.insertion.pricePerDay = this.insertion.pricePerDay + "";
     const data:ProductInsertion = {product: this.product, insertion: this.insertion};
+    console.log(data);
     this.service.updateInsertion(this.poolId, data).subscribe((d) => {
       this.snackBar.open("Gespeichert", "OK", {
         duration: 2000,
@@ -104,7 +107,6 @@ export class DeviceEditComponent implements OnInit, OnDestroy {
       });
       this.setProduct(d.product);
       this.products.push(d.product);
-      console.log("FromServer", d);
     }, (er)=>{this.service.catchError(er)});
   }
   ngOnDestroy(){

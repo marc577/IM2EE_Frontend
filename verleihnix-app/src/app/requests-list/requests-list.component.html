@@ -31,7 +31,7 @@
             <div class="request-info">
               <h4 *ngIf="re.type == 1" mat-line>Anfrage</h4>
               <h4 *ngIf="re.type == 2" mat-line>Ausganng</h4>
-              <p mat-line> {{re.dateFrom * 1000 | date}} bis {{re.dateTo * 1000 | date}}</p>
+              <p mat-line> {{re.dateFrom | date}} bis {{re.dateTo | date}}</p>
             </div>
             <div class="request-content">
             </div>
@@ -47,7 +47,7 @@
                 <button mat-raised-button color="primary" style="margin-right: 15px;">Aktzeptieren</button>
                 <button (click)="rejectRequest(re.id)" mat-raised-button>Ablehnen</button>
               </div>
-              <a mat-stroked-button style="margin-left: 15px;" routerLink="/home/requests/chat/1">
+              <a mat-stroked-button style="margin-left: 15px;" routerLink="/home/requests/chat/{{re.id}}">
                   <mat-icon>chat_bubble_outline</mat-icon>
               </a>
             </div>
