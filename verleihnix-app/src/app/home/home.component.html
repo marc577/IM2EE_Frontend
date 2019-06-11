@@ -18,7 +18,9 @@
        [routerLink]="['./requests']"
        routerLinkActive #rlarequests="routerLinkActive"
        [active]="rlarequests.isActive">
-        Anfragen
+       <span>Anfragen</span>
+       <!-- <span style="margin-left:15px;" *ngIf="countNewMsg > 0" matBadge="{{countNewMsg}}"></span> -->
+        
     </a>
     <a mat-tab-link
        [routerLink]="['./mydevices']"

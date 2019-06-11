@@ -25,6 +25,7 @@ import {MatStepperModule} from '@angular/material/stepper';
 import {MatAutocompleteModule} from '@angular/material/autocomplete';
 import {MatProgressSpinnerModule} from '@angular/material/progress-spinner';
 import {MatCheckboxModule} from '@angular/material/checkbox';
+import {MatBadgeModule} from '@angular/material/badge';
 
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
@@ -88,6 +89,7 @@ import { CommonModule } from '@angular/common';
     MatListModule,
     MatAutocompleteModule,
     MatChipsModule,
+    MatBadgeModule,
     MatCheckboxModule,
     MatProgressSpinnerModule,
     MatTooltipModule,

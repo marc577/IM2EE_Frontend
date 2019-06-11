@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { HttpClient ,HttpHeaders, HttpResponse, HttpErrorResponse } from '@angular/common/http';
 import { BehaviorSubject, Observable, Subject } from 'rxjs';
-import { ComponentFactoryResolver } from '@angular/core/src/render3';
+import { ComponentFactoryResolver, pipe } from '@angular/core/src/render3';
 import { catchError, map, tap } from 'rxjs/operators';
 
 export enum HTTP_Codes {
@@ -20,19 +20,16 @@ export interface Product {
   id: number,
   title: string,
   description:string,
-  insertions? :Insertion[]
+  minPricePerDay:number,
+  insertions? :Insertion[],
+  image: string
 }
 
 export interface NewRequest {
-  // id: number,
-  // state: string,
   dateFrom:number,
   dateTo:number,
-  // editAt: number,
   message:string,
-  // type: number,
   insertionId:number
-
 }
 export interface Request {
   id: number,
@@ -40,13 +37,14 @@ export interface Request {
   dateFrom:number,
   dateTo:number,
   editAt: number,
-  type: number
+  type: number,
+  insertionTitle:string
 }
 export interface Insertion {
   id:number,
   description: string,
   title: string,
-  image: null,
+  image: string,
   active: boolean,
   pricePerDay: number,
   insertionStateCalendars?: Request[],
@@ -72,61 +70,14 @@ export interface Message {
   readByListener:boolean
 }
 
-const sampleProductData = [
-  {id:1,  title:"Devie1", description:"Devie1"},
-  {id:2, title:"Devie2", description:"Devie2"},
-  {id:3, title:"Devie3", description:"Devie3"},
-  {id:4, title:"Devie4", description:"Devie4"},
-  {id:5,title:"Devie5", description:"Devie5"},
-  {id:6, title:"Devie6", description:"Devie6"},
-  {id:7, title:"Devie7", description:"Devie7"},
-  {id:8, title:"Devie8", description:"Devie8"}
-];
-const samppleRequestsData = [
-  {id:1, state:"requested",  dateFrom: 1558607603, dateTo:1558607603, type: 1, editAt:2},
-  {id:1, state:"accepted",  dateFrom: 1558607603, dateTo:1558607603, type: 1, editAt:2},
-  {id:1, state:"declined",  dateFrom: 1558607603, dateTo:1558607603, type: 1, editAt:2},
-  {id:1, state:"requested",  dateFrom: 1558607603, dateTo:1558607603, type: 2, editAt:2},
-  {id:1, state:"accepted",  dateFrom: 1558607603, dateTo:1558607603, type: 2, editAt:2},
-  {id:1, state:"declined",  dateFrom: 1558607603, dateTo:1558607603, type: 2, editAt:2},
-  {id:1, state:"requested",  dateFrom: 1558607603, dateTo:1558607603, type: 2, editAt:2},
-  {id:1, state:"requested",  dateFrom: 1558607603, dateTo:1558607603, type: 1, editAt:2},
-  {id:1, state:"requested",  dateFrom: 1558607603, dateTo:1558607603, type: 2, editAt:2},
-  {id:1, state:"requested",  dateFrom: 1558607603, dateTo:1558607603, type: 1, editAt:2},
-  {id:1, state:"requested",  dateFrom: 1558607603, dateTo:1558607603, type: 2, editAt:2}
-];
-const sampleDeviceData = [
-  {id:1, description: "Pool1", basicDevices:[
-    {id:1,  description:"Devie1"},
-    {id:2, description:"Devie2"}
-  ]},
-  {id:2, description: "Pool2", basicDevices:[
-    {id:4, description:"Devie4"},
-    {id:5, description:"Devie5"},
-    {id:6, description:"Devie6"},
-    {id:7, description:"Devie7"},
-    {id:8, description:"Devie8"}
-  ]},
-];
-
-const sampleChatData:Message[] = [
-  // {date: 1558607603, content: "Hallo du deppHallo du deppHallo du deppHallo du deppHallo du deppHallo du deppHallo du deppHallo du deppHallo du deppHallo du deppHallo du depp", type:0},
-  // {date: 1558607603, content: "Hallo du depp1", type:1},
-  // {date: 1558607603, content: "Hallo du depp3", type:0},
-  // {date: 1558607603, content: "Hallo du dep44Hallo du deppHallo du deppHallo du deppHallo du deppHallo du deppHallo du deppHallo du deppHallo du deppHallo du deppHallo du deppHallo du deppHallo du deppHallo du depp", type:0},
-  // {date: 1558607603, content: "Hallo du depdsfdsfp", type:1},
-  // {date: 1558607603, content: "Hallo du depdsfp", type:1},
-  // {date: 1558607603, content: "Hallo du", type:0},
-];
-
-
 @Injectable({
   providedIn: 'root'
 })
 export class DataService {
 
   public static TOKEN = "vlnx-jwt";
-  public static ROOT = "http://localhost:8080/verleihnix/api/";
+  //public static ROOT = "http://localhost:8080/verleihnix/api/";
+  public static ROOT = "./api/";
 
   private _productData: BehaviorSubject<Product[]>;
   private _requestData: BehaviorSubject<Request[]>;
@@ -155,7 +106,6 @@ export class DataService {
   get requestData(){
     const url = DataService.ROOT + "insertionRequest";
     this.http.get<Request[]>(url).subscribe(res => {
-      console.log(res);
       this._requestData.next(res);
     }, (error) => {
       this.catchError(error);
@@ -170,6 +120,10 @@ export class DataService {
     const url = DataService.ROOT+"insertionRequest/state/"+requestId;
     return this.http.post<NewRequest>(url, data);
   }
+  deleteRequest(requestId: number){
+    const url = DataService.ROOT+"insertionRequest/"+requestId;
+    return this.http.delete<NewRequest>(url);
+  }
 
   // Chat
   getChatData(requestId: number){
@@ -179,6 +133,10 @@ export class DataService {
   sendMessage(message:{idSender:number, message:string, idInsertionRequest:number}){
     const url = DataService.ROOT+"chat";
     return this.http.post<Message>(url, message);
+  }
+  getNewMessages(){
+    const url = DataService.ROOT + "chat/new";
+    return this.http.get<number>(url);
   }
 
   // User
@@ -193,12 +151,16 @@ export class DataService {
   }
   logIn(email:string, password:string ) {
     const url = DataService.ROOT+"user/login";
-    return this.http.post<User>(url, {"email":email,"password": password}).subscribe( res => {
+    var ret =  <BehaviorSubject<Boolean>>new BehaviorSubject(false);
+    this.http.post<User>(url, {"email":email,"password": password}).subscribe( res => {
       localStorage.setItem(DataService.TOKEN, res.token);
       this._userData.next(res);
+      ret.next(false);
     }, (error)=>{
-      this.catchError(error);
+      ret.next(true);
+      // this.catchError(error);
     });
+    return ret;
   }
   logOut(){
     localStorage.removeItem(DataService.TOKEN);
@@ -235,7 +197,6 @@ export class DataService {
   get productData(){
     const url = DataService.ROOT + "product";
     this.http.get<Product[]>(url).subscribe(res => {
-      console.log("sdsd", res);
       this._productData.next(res);
     }, (error) => {
       this.catchError(error);
@@ -286,13 +247,19 @@ export class DataService {
       "description": pI.insertion.description,
       "active": pI.insertion.active,
       "id": pI.insertion.id,
-      "image": pI.insertion.image
+      "pricePerDay": pI.insertion.pricePerDay
     };
     return this.http.post<ProductInsertion>(url, data);
   }
   deleteInsertion(id:number){
     const url = DataService.ROOT+"insertion/"+id;
-    this.http.delete(url).subscribe(null, (er)=> {this.catchError(er)});
+    this.http.delete(url).subscribe((va) => {
+      this.devicesData;
+    }, (er)=> {this.catchError(er)});
+  }
+  updateInsertionImage(id:number, image:string){
+    const url = DataService.ROOT+"insertion/image/"+id;
+    return this.http.post(url, image);
   }
 
   //erros

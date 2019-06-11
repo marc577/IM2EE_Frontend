@@ -8,6 +8,7 @@ import {MatDialog, MatDialogRef, MAT_DIALOG_DATA} from '@angular/material';
 
 interface DialogData {
   description: string;
+  id:number
 }
 
 @Component({

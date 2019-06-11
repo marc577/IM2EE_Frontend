@@ -1,4 +1,7 @@
-<div>
+<div class="spinner" *ngIf="loading" >
+    <mat-spinner></mat-spinner>
+</div>
+<div *ngIf="!loading">
   <br>
     <div>
         <a mat-button routerLink="/home/mydevices/pools">
@@ -67,8 +70,16 @@
                 <br>
                 <mat-checkbox  [(ngModel)]="insertion.active" formControlName="activeRequired">Geräte verfügbar</mat-checkbox>
               </form>
+              <hr>
+              <div style="display: flex; justify-content: center;">
+                <img src="{{insertion.image}}" style="display: block;max-height: 400px;">
+                <br>
+                <input type="file" accept="image/*" (change)="handleInputChange($event)" style="display: block;">
+              </div>
+              <hr>
         </mat-card-content>
         <mat-card-content class="card-content" align="end">
+          <br>
           <div class="actions">
               <button matTooltip="Speichern" [disabled]="secondFormGroup.invalid || firstFormGroup.invalid" mat-stroked-button (click)="save()">Speichern</button>
           </div>

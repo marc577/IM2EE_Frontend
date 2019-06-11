@@ -21,16 +21,17 @@
     </div>
     <div class="center-content">
     <mat-list>
-        <h3 *ngIf="requestType == 0" mat-subheader>Alle</h3>
-        <h3 *ngIf="requestType == 1" mat-subheader>Eingang</h3>
-        <h3 *ngIf="requestType == 2" mat-subheader>Ausgang</h3>
+        <h3 *ngIf="requestType == '0'" mat-subheader>Alle</h3>
+        <h3 *ngIf="requestType == '1'" mat-subheader>Eingang</h3>
+        <h3 *ngIf="requestType == '2'" mat-subheader>Ausgang</h3>
         <mat-list-item *ngFor="let re of requests | filter: filterActive:'type':requestType">
           <mat-icon *ngIf="re.type == 1" mat-list-icon>assignment_returned</mat-icon>
           <mat-icon *ngIf="re.type == 2" mat-list-icon>assignment_return</mat-icon>
           <div class="request">
             <div class="request-info">
-              <h4 *ngIf="re.type == 1" mat-line>Anfrage</h4>
-              <h4 *ngIf="re.type == 2" mat-line>Ausganng</h4>
+              <!-- <h4 *ngIf="re.type == 1" mat-line>Anfrage</h4>
+              <h4 *ngIf="re.type == 2" mat-line>Ausganng</h4> -->
+              <h4 mat-line>{{re.insertionTitle}}</h4>
               <p mat-line> {{re.dateFrom | date}} bis {{re.dateTo | date}}</p>
             </div>
             <div class="request-content">
@@ -38,16 +39,31 @@
             <div class="request-action">
               <div>
                 <mat-chip-list *ngIf="re.type == 2">
-                  <mat-chip selected color="primary">Offen</mat-chip>
-                  <mat-chip>Aktzeptiert</mat-chip>
-                  <mat-chip>Abgelehnt</mat-chip>
+                  <mat-chip *ngIf="re.state == 'requested'" selected color="primary">Offen</mat-chip>
+                  <mat-chip *ngIf="re.state != 'requested'" >Offen</mat-chip>
+                  <mat-chip *ngIf="re.state == 'accepted'" selected color="primary">Aktzeptiert</mat-chip>
+                  <mat-chip *ngIf="re.state != 'accepted'"  >Aktzeptiert</mat-chip>
+                  <mat-chip *ngIf="re.state == 'declined'" selected color="primary">Abgelehnt</mat-chip>
+                  <mat-chip *ngIf="re.state != 'declined'"  >Abgelehnt</mat-chip>
                 </mat-chip-list>
               </div>
-              <div *ngIf="re.type == 1">
-                <button mat-raised-button color="primary" style="margin-right: 15px;">Aktzeptieren</button>
-                <button (click)="rejectRequest(re.id)" mat-raised-button>Ablehnen</button>
+              <div style="margin-right:15px;" *ngIf="re.type == 1">
+                <mat-chip-list>
+                  <mat-chip *ngIf="re.state == 'declined'" color="primary">Abgelehnt</mat-chip>
+                  <mat-chip *ngIf="re.state == 'accepted'" color="primary">Aktzeptiert</mat-chip>
+                </mat-chip-list>
               </div>
-              <a mat-stroked-button style="margin-left: 15px;" routerLink="/home/requests/chat/{{re.id}}">
+              <div style="margin-left:15px;" *ngIf="re.type == 2">
+                <button mat-stroked-button color="warn" matTooltip="Anfrage löschen" (click)="deleteRequest(re.id)">
+                    <mat-icon>delete</mat-icon>
+                </button>
+              </div>
+              <div *ngIf="re.type == 1">
+                <button *ngIf="re.state == 'requested'" mat-raised-button color="primary" style="margin-right: 15px;" (click)="acceptRequest(re.id)">Aktzeptieren</button>
+                <button *ngIf="re.state == 'requested'" (click)="rejectRequest(re.id)" mat-raised-button>Ablehnen</button>
+                <button *ngIf="re.state != 'requested'" (click)="reopenRequest(re.id)" mat-raised-button>Öffnen</button>
+              </div>
+              <a mat-stroked-button style="margin-left: 15px;" routerLink="/home/requests/chat/{{re.id}}" matTooltip="Verlauf anzeigen">
                   <mat-icon>chat_bubble_outline</mat-icon>
               </a>
             </div>

@@ -24,6 +24,7 @@ export class DeviceEditComponent implements OnInit, OnDestroy {
   poolId:number;
   insertionId:number;
   insertion:Insertion;
+  loading:boolean;
 
   sub:Subscription;
   subProducts:Subscription;
@@ -31,10 +32,12 @@ export class DeviceEditComponent implements OnInit, OnDestroy {
 
   subInsertion:Subscription;
 
+  private newImgString;
+
   constructor(private _formBuilder: FormBuilder, private service:DataService, private aRoute:ActivatedRoute, private snackBar: MatSnackBar) {
+    this.loading = true;
     this.newProduct = true;
     this.product = null;
-    this.insertion = {title:"", description:"", active:true, id:-1, image:null, pricePerDay: 0.0};
     this.subProducts = this.service.productData.subscribe((products) => {
       this.products = products;
     });
@@ -48,7 +51,11 @@ export class DeviceEditComponent implements OnInit, OnDestroy {
           this.insertion = data.insertion;
           this.setProduct(data.product);
           this.product = data.product;
+          this.loading = false;
         }, (er)=> {this.service.catchError(er)});
+      }else{
+        this.insertion = {title:"", description:"", active:true, id:-1, image:null, pricePerDay: 0.0};
+        this.loading = false;
       }
     });
   }
@@ -94,27 +101,61 @@ export class DeviceEditComponent implements OnInit, OnDestroy {
     this.descCtrl.disable();
   }
   save(){
+    this.loading = true;
     if(this.product == null && this.firstFormGroup.valid){
-      this.product = {title: this.productCtrl.value, description: this.descCtrl.value, id:-1};
+      this.product = {title: this.productCtrl.value, description: this.descCtrl.value, id:-1, minPricePerDay:0, image:""};
     }
-    //this.insertion.pricePerDay = this.insertion.pricePerDay + "";
     const data:ProductInsertion = {product: this.product, insertion: this.insertion};
-    console.log(data);
+    
     this.service.updateInsertion(this.poolId, data).subscribe((d) => {
-      this.snackBar.open("Gespeichert", "OK", {
-        duration: 2000,
-        verticalPosition:"top"
-      });
+      if(this.newProduct == true){
+        this.products.push(d.product);
+      }
       this.setProduct(d.product);
-      this.products.push(d.product);
+      if(this.newImgString != null){
+        this.service.updateInsertionImage(d.insertion.id, this.newImgString).subscribe(val => {
+          this.newImgString = null;
+          this.finishLoading();
+        });
+      }else{
+        this.finishLoading();
+      }
     }, (er)=>{this.service.catchError(er)});
   }
+
+  private finishLoading(){
+    this.loading = false;
+    this.snackBar.open("Gespeichert", "OK", {
+      duration: 2000,
+      verticalPosition:"top"
+    });
+  }
+
   ngOnDestroy(){
     this.sub.unsubscribe();
     this.subProducts.unsubscribe();
     if(this.subInsertion){
       this.subInsertion.unsubscribe();
     }
+  }
+
+  //file Upload
+  handleInputChange(e) {
+    var file = e.dataTransfer ? e.dataTransfer.files[0] : e.target.files[0];
+    var pattern = /image-*/;
+    var reader = new FileReader();
+    if (!file.type.match(pattern)) {
+      alert('invalid format');
+      return;
+    }
+    reader.onload = this._handleReaderLoaded.bind(this);
+    reader.readAsDataURL(file);
+  }
+  _handleReaderLoaded(e) {
+    let reader = e.target;
+    var imgString = reader.result;
+    this.newImgString = imgString;
+    this.insertion.image = this.newImgString;
   }
 
 }

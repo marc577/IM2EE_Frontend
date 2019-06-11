@@ -7,7 +7,6 @@ export class FilterPipe implements PipeTransform {
 
   transform(items: any[],active: boolean, key: string, value:any): any[] {
     if(!items) return [];
-    console.log(active);
     if(!value || !active) return items;
     value = value.toLowerCase();
     return items.filter( it => {

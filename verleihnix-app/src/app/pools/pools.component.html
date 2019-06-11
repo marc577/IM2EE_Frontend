@@ -1,54 +1,56 @@
-<h2>Geräteübersicht</h2>
-<div>
-  <mat-accordion>
-      <mat-expansion-panel *ngFor="let pool of devicePools; let i = index" [expanded]="i == expandedPool" (opened)="setExpanded(i)" (closed)="setClosed(i)">
-        <mat-expansion-panel-header>
-          <mat-panel-title>
-            {{pool.insertions.length + ((pool.insertions.length == 1) ? " Gerät" : " Geräte")}}
-          </mat-panel-title>
-          <mat-panel-description>
-              {{pool.description}}
-          </mat-panel-description>
-        </mat-expansion-panel-header>
-        <mat-divider></mat-divider>
-        <br>
-        <mat-list-item *ngFor="let de of pool.insertions">
-          <div mat-line class="insertion">
-              <div class="head">
-                <span>{{de.id}}</span>
-                <h4>{{de.title}}</h4>
-              </div>
-              <mat-chip-list>
-                  <mat-chip *ngIf="de.active">Verfügbar</mat-chip>
-                  <mat-chip *ngIf="!de.active">Gesperrt</mat-chip>
-              </mat-chip-list>
-              <div class="actions">
-                <button matTooltip="Gerät bearbeiten" mat-stroked-button (click)="goToEdit(pool.id, de.id)"><mat-icon>edit</mat-icon></button>
-                <button matTooltip="Gerät löschen" color="warn" mat-stroked-button (click)="deleteDevice(de)"><mat-icon>delete</mat-icon></button>
-              </div>
-          </div>
-          <br>
+<div style="margin-left:15px;margin-right:15px;">
+  <h2>Geräteübersicht</h2>
+  <div>
+    <mat-accordion>
+        <mat-expansion-panel *ngFor="let pool of devicePools; let i = index" [expanded]="i == expandedPool" (opened)="setExpanded(i)" (closed)="setClosed(i)">
+          <mat-expansion-panel-header>
+            <mat-panel-title>
+              {{pool.insertions.length + ((pool.insertions.length == 1) ? " Gerät" : " Geräte")}}
+            </mat-panel-title>
+            <mat-panel-description>
+                {{pool.description}}
+            </mat-panel-description>
+          </mat-expansion-panel-header>
           <mat-divider></mat-divider>
           <br>
-          </mat-list-item>
-          <div mat-line align="right">
+          <mat-list-item *ngFor="let de of pool.insertions">
+            <div mat-line class="insertion">
+                <div class="head">
+                  <span>{{de.id}}</span>
+                  <h4>{{de.title}}</h4>
+                </div>
+                <mat-chip-list>
+                    <mat-chip *ngIf="de.active">Verfügbar</mat-chip>
+                    <mat-chip *ngIf="!de.active">Gesperrt</mat-chip>
+                </mat-chip-list>
+                <div class="actions">
+                  <button matTooltip="Gerät bearbeiten" mat-stroked-button (click)="goToEdit(pool.id, de.id)"><mat-icon>edit</mat-icon></button>
+                  <button matTooltip="Gerät löschen" color="warn" mat-stroked-button (click)="deleteDevice(de)"><mat-icon>delete</mat-icon></button>
+                </div>
+            </div>
             <br>
-              <button (click)="goToEdit(pool.id, -1)" mat-stroked-button color="primary" matTooltip="Gerät hinzufügen">
-                  <mat-icon>add</mat-icon>
+            <mat-divider></mat-divider>
+            <br>
+            </mat-list-item>
+            <div mat-line align="right">
+              <br>
+                <button (click)="goToEdit(pool.id, -1)" mat-stroked-button color="primary" matTooltip="Gerät hinzufügen">
+                    <mat-icon>add</mat-icon>
+                </button>
+                <button (click)="editPool(pool)" mat-stroked-button color="basic" matTooltip="Gerätepool bearbeiten">
+                    <mat-icon>edit</mat-icon>
+                </button>
+                <button (click)="deletePool(pool);" [disabled]="pool.insertions.length > 0" mat-stroked-button color="warn" matTooltip="Gerätepool löschen">
+                  <mat-icon>delete</mat-icon>
               </button>
-              <button (click)="editPool(pool)" mat-stroked-button color="basic" matTooltip="Gerätepool bearbeiten">
-                  <mat-icon>edit</mat-icon>
-              </button>
-              <button [disabled]="pool.insertions.length > 0" mat-stroked-button color="warn" matTooltip="Gerätepool löschen">
-                <mat-icon>delete</mat-icon>
-            </button>
-          </div>
-      </mat-expansion-panel>
-    </mat-accordion>
-</div>
-<br>
-<div>
-    <button matTooltip="Gerätepool hinzufügen" (click)="addPool()" mat-mini-fab color="primary">
-        <mat-icon>add</mat-icon>
-    </button>
+            </div>
+        </mat-expansion-panel>
+      </mat-accordion>
+  </div>
+  <br>
+  <div>
+      <button matTooltip="Gerätepool hinzufügen" (click)="addPool()" mat-mini-fab color="primary">
+          <mat-icon>add</mat-icon>
+      </button>
+  </div>
 </div>

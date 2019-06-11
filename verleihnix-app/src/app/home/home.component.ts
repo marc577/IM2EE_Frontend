@@ -25,6 +25,7 @@ export class HomeComponent implements OnInit, OnDestroy {
 
   subUser:Subscription;
   user:User;
+  countNewMsg = 0;
 
   constructor(private router: Router, private service:DataService, private dialog: MatDialog) {
     this.subUser = this.service.userData.subscribe((val) => {
@@ -38,6 +39,9 @@ export class HomeComponent implements OnInit, OnDestroy {
   }
 
   ngOnInit() {
+    this.service.getNewMessages().subscribe((val)=>{
+      this.countNewMsg = val;
+    });
   }
   ngOnDestroy(){
     this.subUser.unsubscribe();
@@ -67,6 +71,8 @@ export class EditPersonalDialog {
 
   oldPW = new FormControl('', [Validators.required]);
   newPW = new FormControl('', [Validators.required]);
+
+
 
   constructor(
     public dialogRef: MatDialogRef<EditPersonalDialog>,

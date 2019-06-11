@@ -53,7 +53,14 @@ export class LoginComponent implements OnInit, OnDestroy {
 
   onSubmitLogin(){
     if(this.loginForm.valid){
-      this.service.logIn(this.email.value, this.password.value);
+      this.service.logIn(this.email.value, this.password.value).subscribe((val)=>{
+        if(val == true){
+          this.snackBar.open("Benutzer oder Passwort falsch!", "OK", {
+            duration: 3000,
+            verticalPosition:"top"
+          })
+        }
+      })
     }
   }
   onSubmitRegister(){

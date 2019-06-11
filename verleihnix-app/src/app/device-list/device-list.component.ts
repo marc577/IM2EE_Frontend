@@ -49,7 +49,7 @@ export class DeviceListComponent implements OnInit {
   search(){
     this.service.searchString = this.searchValue;
     if(this.searchValue != undefined){
-      console.log("Suche", this.searchValue);
+      //console.log("Suche", this.searchValue);
     }
   }
   goToDetail(deviceId:number){

@@ -3,7 +3,8 @@ import { Router, ActivatedRoute } from '@angular/router';
 import { FormControl, Validators } from '@angular/forms';
 import { DataService, Request } from 'src/app/services/data.service';
 import { Subscription } from 'rxjs';
-import {MatDialog, MatDialogRef, MAT_DIALOG_DATA} from '@angular/material';
+import {MatDialog, MatDialogRef, MAT_DIALOG_DATA, MatSnackBar} from '@angular/material';
+import { COMMENT_MARKER } from '@angular/core/src/render3/interfaces/i18n';
 
 
 interface DialogData {
@@ -26,18 +27,18 @@ export class RequestsListComponent implements OnInit {
     private router: Router,
     private aRoute: ActivatedRoute, 
     private service:DataService,
-    private dialog: MatDialog
+    private dialog: MatDialog,
+    private snackBar:MatSnackBar
     ) {
     this.requestType = "0";
     this.filterActive = false;
-    
-    this.subRequestsData = this.service.requestData.subscribe((data) => {
-      this.requests = data;
-    });
 
   }
 
   ngOnInit() {
+    this.subRequestsData = this.service.requestData.subscribe((data) => {
+      this.requests = data;
+    });
   }
 
   ngOnDestroy(){
@@ -58,8 +59,50 @@ export class RequestsListComponent implements OnInit {
     });
 
     dialogRef.afterClosed().subscribe(comment => {
-      console.log('The dialog was closed', comment);
+      if(comment != undefined){
+        this.service.setRequestState(id, {message: comment, state: 2}).subscribe((val)=>{
+          this.ngOnInit();
+          this.snackBar.open("Anfrage abgelehnt!", "OK", {
+            duration: 3000,
+            verticalPosition:"top"
+          });
+        }, (er)=>{
+          this.service.catchError(er);
+        });
+      }
     });
+  }
+
+  acceptRequest(id:number){
+    const comment = "Anfrage aktzeptiert!";
+    this.service.setRequestState(id, {message: comment, state: 1}).subscribe((val)=>{
+      this.ngOnInit();
+      this.snackBar.open(comment, "OK", {
+        duration: 3000,
+        verticalPosition:"top"
+      });
+    }, (er)=>{
+      this.service.catchError(er);
+    });
+  }
+  reopenRequest(id:number){
+    const comment = "Anfrage wieder geöffnet!";
+    this.service.setRequestState(id, {message: comment, state: 0}).subscribe((val)=>{
+      this.ngOnInit();
+      this.snackBar.open(comment, "OK", {
+        duration: 3000,
+        verticalPosition:"top"
+      });
+    }, (er)=>{
+      this.service.catchError(er);
+    });
+  }
+  deleteRequest(id:number){
+    if(confirm("Anfrage wirklich löschen?")){
+      this.service.deleteRequest(id).subscribe(() => {
+        this.service.requestData;
+      });
+    }
   }
 
   goToChat(partner: number){

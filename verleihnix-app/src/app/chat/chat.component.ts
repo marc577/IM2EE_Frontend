@@ -36,7 +36,7 @@ export class ChatComponent implements OnInit, OnDestroy, AfterViewChecked {
   load(){
     if(this.subChat) this.subChat.unsubscribe();
     this.subChat = this.service.getChatData(this.request).subscribe((data)=>{
-      console.log(data);
+      //console.log(data);
       this.messages = data;
     });
   }

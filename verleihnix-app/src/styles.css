@@ -18,3 +18,9 @@ body{
 .mat-tab-body-content{
     width:80%;
 }
+.spinner {
+    padding-top: 15px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}

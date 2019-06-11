@@ -53,7 +53,6 @@ export class DeviceDetailComponent implements OnInit, OnDestroy {
       this.id = +params['id'];
       this.subProduct = this.service.getProduct(this.id).subscribe((p)=>{
         this.product = p;
-        console.log("P",this.product);
         this.filter();
       });
     });
@@ -82,10 +81,11 @@ export class DeviceDetailComponent implements OnInit, OnDestroy {
       var diff = Math.abs(to - from);
       this.days = Math.ceil(diff / (1000 * 3600 * 24)) + 1;
       var requests = element.insertionRequests;
-      console.log(requests);
+      //console.log(requests);
       if(!requests) return false;
       for (let index = 0; index < requests.length; index++) {
         const el = requests[index];
+        if(el.state == "declined"){continue;}
         const elFrom = el.dateFrom;
         const elTo = el.dateTo;
         var b = this._periodFilter(from, elFrom, to, elTo);
@@ -98,12 +98,12 @@ export class DeviceDetailComponent implements OnInit, OnDestroy {
   }
   private _periodFilter(from:number, elFrom:number, to:number, elTo:number):boolean{
     //TODO: Date Filter
-    console.log(from);
-    console.log(elFrom);
-    console.log(to);
-    console.log(elTo);
-    if(from < elFrom && to > elTo) return false;
-    if(elFrom < from && elTo > to) return false;
+    // console.log(from);
+    // console.log(elFrom);
+    // console.log(to);
+    // console.log(elTo);
+    if(from <= elFrom && to >= elTo) return false;
+    if(elFrom <= from && elTo >= to) return false;
     if(elTo > from && elTo < to) return false;
     if(elFrom > from && elFrom < to) return false;
     return true;
@@ -111,7 +111,7 @@ export class DeviceDetailComponent implements OnInit, OnDestroy {
 
   request(d:Insertion){
     var msg = "Ich möchte gerne Ihr Produkt gerne vom " + this.datePipe.transform(this.dateFrom.value)+ " bis zum ";
-    msg += this.datePipe.transform(this.dateFrom.value) + " ausleihen!";
+    msg += this.datePipe.transform(this.dateTo.value) + " ausleihen!";
     const dialogRef = this.dialog.open(DialogNewRequestDialog, {
       width: '300px',
       data: {comment: msg}
